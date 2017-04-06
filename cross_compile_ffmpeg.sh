@@ -1524,6 +1524,7 @@ build_ffmpeg() {
       --enable-libgsm \
       --enable-libilbc \
       --enable-libmodplug \
+      --enable-libmp3lame \
       --enable-libopencore-amrnb \
       --enable-libopencore-amrwb \
       --enable-libopenjpeg \
@@ -1533,6 +1534,7 @@ build_ffmpeg() {
       --enable-libsoxr \
       --enable-libspeex \
       --enable-libtheora \
+      --enable-libtwolame --extra-cflags=-DLIBTWOLAME_STATIC \
       --enable-libvorbis \
       --enable-zlib"
 #  build_libdlfcn # ffmpeg's frei0r implentation needs this <sigh>
@@ -1685,8 +1687,8 @@ build_dependencies() {
 #  build_libsamplerate
 #  build_librubberband # needs libsndfile, vamp_plugin [though it never uses it], fftw, libsamplerate [some of which it doesn't have to use, but configure require they be installed, so we use them anyway...gah]
 
-#  build_lame
-#  build_twolame
+  build_lame
+  build_twolame
 #  build_vidstab
 #  build_netcdf
   build_libcaca

@@ -31,11 +31,11 @@ One line per build /config_option/
 --enable-libschroedinger        DONE
 --enable-libsoxr                DONE
 --enable-libspeex               DONE
---enable-libtheora      DONE (when "making", fails on vp3huff test as it's a win32 exe; re-run, libtheora dir present so not "made"; libs exist)
+--enable-libtheora              DONE (when "making", fails on vp3huff test as it's a win32 exe; re-run, libtheora dir present so not "made"; libs exist)
 --enable-libtwolame
 --enable-libvo-aacenc
 --enable-libvo-amrwbenc
---enable-libvorbis      DONE
+--enable-libvorbis              DONE
 --enable-libvpx
 --enable-libwavpack
 --enable-zlib                   DONE
