@@ -1514,7 +1514,11 @@ build_ffmpeg() {
       --enable-version3 \
       --enable-bzlib \
       --enable-fontconfig \
+      --enable-gnutls \
       --enable-iconv \
+      --enable-libass \
+      --enable-libbluray \
+      --enable-libcaca \
       --enable-libfreetype \
       --enable-libspeex \
       --enable-zlib"
@@ -1627,10 +1631,10 @@ build_dependencies() {
 #  build_libzimg
 #  build_libsnappy
 #  build_libpng # for openjpeg, needs zlib
-#  build_gmp # for libnettle
-#  build_libnettle # needs gmp
+  build_gmp # for libnettle
+  build_libnettle # needs gmp
   build_iconv # mplayer I think needs it for freetype [just it though], vlc also wants it.  looks like ffmpeg can use it too...not sure what for :)
-#  build_gnutls # needs libnettle, can use iconv it appears
+  build_gnutls # needs libnettle, can use iconv it appears
 
 #  build_frei0r
 #  build_libsndfile
@@ -1653,8 +1657,8 @@ build_dependencies() {
 #  build_libschroedinger # needs orc
   build_freetype # uses bz2/zlib seemingly
   build_libexpat
-#  build_libxml2
-#  build_libbluray # needs libxml2, freetype
+  build_libxml2
+  build_libbluray # needs libxml2, freetype
   # build_libjpeg_turbo # mplayer can use this, VLC qt might need it? [replaces libjpeg]
 #  build_libxvid
 #  build_libxavs
@@ -1672,15 +1676,15 @@ build_dependencies() {
 #  build_twolame
 #  build_vidstab
 #  build_netcdf
-#  build_libcaca
+  build_libcaca
 #  build_libmodplug # ffmepg and vlc can use this
 #  build_zvbi
 #  build_libvpx
 #  build_libdecklink
 #  build_libilbc
   build_fontconfig # needs expat, needs freetype (at least uses it if available), can use iconv, but I believe doesn't currently
-#  build_libfribidi
-#  build_libass # needs freetype, needs fribidi, needs fontconfig
+  build_libfribidi
+  build_libass # needs freetype, needs fribidi, needs fontconfig
 #  build_libopenjpeg
   if [[ $build_intel_qsv = y ]]; then
     build_intel_quicksync_mfx

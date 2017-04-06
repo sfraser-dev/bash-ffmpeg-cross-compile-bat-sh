@@ -13,11 +13,11 @@ One line per build /config_option/
 --enable-avisynth               NO, get error message: "avisynth is gpl and --enable-gpl is not specified."
 --enable-bzlib                  DONE
 --enable-fontconfig             DONE
---enable-gnutls
+--enable-gnutls         DONE
 --enable-iconv                  DONE
---enable-libass
---enable-libbluray
---enable-libcaca
+--enable-libass         DONE
+--enable-libbluray      DONE
+--enable-libcaca        DONE
 --enable-libfreetype            DONE
 --enable-libgsm
 --enable-libilbc
