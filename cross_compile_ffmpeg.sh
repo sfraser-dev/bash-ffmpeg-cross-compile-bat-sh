@@ -1500,44 +1500,49 @@ build_ffmpeg() {
   fi
 
   init_options="--arch=$arch --target-os=mingw32 --cross-prefix=$cross_prefix --pkg-config=pkg-config --disable-w32threads"
-  #config_options="$init_options --enable-libsoxr --enable-fontconfig --enable-libass --enable-libbluray --enable-iconv --enable-libtwolame --extra-cflags=-DLIBTWOLAME_STATIC --enable-libzvbi --enable-libcaca --enable-libmodplug --extra-libs=-lstdc++ --extra-libs=-lpng --enable-decklink --extra-libs=-loleaut32  --enable-libmp3lame --enable-version3 --enable-zlib --enable-librtmp --enable-libvorbis --enable-libtheora --enable-libspeex --enable-libopenjpeg --enable-gnutls  --enable-libgsm --enable-libfreetype --enable-libopus --enable-bzlib --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-libschroedinger --enable-libvpx --enable-libilbc --enable-libwavpack --enable-libwebp --enable-libgme --enable-dxva2 --enable-gray --enable-libopenh264 --enable-netcdf  --enable-libflite --enable-lzma --enable-libsnappy --enable-libzimg"
-  config_options="$init_options --enable-zlib --enable-bzlib"
+  #config_options="$init_options --enable-libsoxr --enable-fontconfig --enable-libass --enable-libbluray --enable-iconv --enable-libtwolame --extra-cflags=-DLIBTWOLAME_STATIC --enable-libzvbi --enable-libcaca --enable-libmodplug --extra-libs=-lstdc++ --extra-libs=-lpng --enable-decklink --extra-libs=-loleaut32  --enable-libmp3lame --enable-version3 --enable-zlib --enable-librtmp --enable-libvorbis --enable-libtheora --enable-libspeex --enable-libopenjpeg --enable-gnutls  --enable-libgsm --enable-libfreetype --enable-libopus --enable-bzlib --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-libschroedinger --enable-libvpx --enable-libilbc --enable-libwavpack --enable-libwebp --enable-libgme --enable-dxva2 --enable-avisynth --enable-gray --enable-libopenh264 --enable-netcdf  --enable-libflite --enable-lzma --enable-libsnappy --enable-libzimg"
+
+  # build quicker by compiling less
+  local sf_options="--disable-ffplay --disable-ffserver --disable-doc --disable-ffprobe"
+  # sf_options="$sf_options --disable-debug" # instead, set do_debug_build=n
+
+  config_options="$init_options $sf_options --enable-zlib --enable-bzlib"
   if [[ $enable_gpl == 'y' ]]; then
-    config_options="$config_options --enable-gpl --enable-libx264 --enable-libx265 --enable-frei0r --enable-filter=frei0r --enable-librubberband --enable-libvidstab --enable-libxavs --enable-libxvid --enable-avisynth"
+    config_options="$config_options --enable-gpl --enable-libx264 --enable-libx265 --enable-frei0r --enable-filter=frei0r --enable-librubberband --enable-libvidstab --enable-libxavs --enable-libxvid"
   fi
   # other possibilities (you'd need to also uncomment the call to their build method): 
   #   --enable-w32threads # [worse UDP than pthreads, so not using that] 
   if [[ $build_intel_qsv = y ]]; then
     config_options="$config_options --enable-libmfx" # [note, not windows xp friendly]
   fi
-###  config_options="$config_options --enable-avresample" # guess this is some kind of libav specific thing (the FFmpeg fork) but L-Smash needs it so why not always build it :)
+  config_options="$config_options --enable-avresample" # guess this is some kind of libav specific thing (the FFmpeg fork) but L-Smash needs it so why not always build it :)
   
-###  config_options="$config_options --extra-libs=-lpsapi" # dlfcn [frei0r?] requires this, has no .pc file should put in frei0r.pc? ...
-###  config_options="$config_options --extra-libs=-lspeexdsp" # libebur :|
-###  for i in $CFLAGS; do
-###    config_options="$config_options --extra-cflags=$i" # --extra-cflags may not be needed here, but adds it to the final console output which I like for debugging purposes
-###  done
+  config_options="$config_options --extra-libs=-lpsapi" # dlfcn [frei0r?] requires this, has no .pc file should put in frei0r.pc? ...
+  config_options="$config_options --extra-libs=-lspeexdsp" # libebur :|
+  for i in $CFLAGS; do
+    config_options="$config_options --extra-cflags=$i" # --extra-cflags may not be needed here, but adds it to the final console output which I like for debugging purposes
+  done
 
   config_options="$config_options $postpend_configure_opts"
 
-###  if [[ "$non_free" = "y" ]]; then
-###    config_options="$config_options --enable-nonfree --enable-libfdk-aac " 
+  if [[ "$non_free" = "y" ]]; then
+    config_options="$config_options --enable-nonfree --enable-libfdk-aac " 
     # libfaac deemed too poor quality and becomes the default if included -- add it in and uncomment the build_faac line to include it, if anybody ever wants it... 
     # To use fdk-aac in VLC, we need to change FFMPEG's default (aac), but I haven't found how to do that... So I disabled it. This could be an new option for the script? (was --disable-decoder=aac )
     # other possible options: --enable-openssl [unneeded since we use gnutls] 
     #  apply_patch https://raw.githubusercontent.com/rdp/ffmpeg-windows-build-helpers/master/patches/nvresize2.patch "-p1" # uncomment if you want to test nvresize filter [et al] http://ffmpeg.org/pipermail/ffmpeg-devel/2015-November/182781.html patch worked with 7ab37cae34b3845
-###  fi
+  fi
 
-###  config_options="$config_options --enable-runtime-cpudetect" # not sure what this even does but this is the most compatible
+  config_options="$config_options --enable-runtime-cpudetect" # not sure what this even does but this is the most compatible
 
   do_debug_build=n # if you need one for backtraces/examining segfaults using gdb.exe ... change this to y :) XXXX make it affect x264 too...and make it param
-###  if [[ "$do_debug_build" = "y" ]]; then
+  if [[ "$do_debug_build" = "y" ]]; then
     # not sure how many of these are actually needed/useful...possibly none LOL
-###    config_options="$config_options --disable-optimizations --extra-cflags=-Og --extra-cflags=-fno-omit-frame-pointer --enable-debug=3 --extra-cflags=-fno-inline $postpend_configure_opts"
+    config_options="$config_options --disable-optimizations --extra-cflags=-Og --extra-cflags=-fno-omit-frame-pointer --enable-debug=3 --extra-cflags=-fno-inline $postpend_configure_opts"
     # this one kills gdb workability for static build? ai ai [?] XXXX
-###    config_options="$config_options --disable-libgme"
-###  fi
-###  config_options="$config_options $extra_postpend_configure_options"
+    config_options="$config_options --disable-libgme"
+  fi
+  config_options="$config_options $extra_postpend_configure_options"
 
   do_configure "$config_options"
   rm -f */*.a */*.dll *.exe # just in case some dependency library has changed, force it to re-link even if the ffmpeg source hasn't changed...
@@ -1622,9 +1627,9 @@ build_dependencies() {
 #  build_sdl2 # needed for ffplay to be created
 #  build_libopus
 #  build_libopencore
-#  build_libogg
-#  build_libspeexdsp # needs libogg for exe's
-#  build_libspeex # needs libspeexdsp
+  build_libogg
+  build_libspeexdsp # needs libogg for exe's
+  build_libspeex # needs libspeexdsp
 #  build_libvorbis # needs libogg
 #  build_libtheora # needs libvorbis, libogg
 #  build_orc
@@ -1637,7 +1642,7 @@ build_dependencies() {
 #  build_libxvid
 #  build_libxavs
 #  build_libsoxr
-  #build_libebur128 # needs speex # Now included in ffmpeg as internal library
+  build_libebur128 # needs speex # Now included in ffmpeg as internal library
 #  build_libx265
 #  build_libopenh264
 
@@ -1716,7 +1721,7 @@ build_apps() {
   fi  
 }
 
-## START
+## START MAIN
 ## set some parameters initial values
 cur_dir="$(pwd)/sandbox"
 echo cur_dir = $cur_dir
@@ -1901,28 +1906,28 @@ if [[ $compiler_flavors == "multi" || $compiler_flavors == "win32" ]]; then
     echo 
   cd ..
 fi
-#
-#if [[ $compiler_flavors == "multi" || $compiler_flavors == "win64" ]]; then
-#  echo
-#  echo "**************Starting 64-bit builds..." # make it have a bit easier to you can see when 32 bit is done 
-#  host_target='x86_64-w64-mingw32'
-#  mingw_w64_x86_64_prefix="$cur_dir/cross_compilers/mingw-w64-x86_64/$host_target"
-#  mingw_bin_path="$cur_dir/cross_compilers/mingw-w64-x86_64/bin"
-#  export PATH="$mingw_bin_path:$original_path"
-#  export PKG_CONFIG_PATH="$cur_dir/cross_compilers/mingw-w64-x86_64/x86_64-w64-mingw32/lib/pkgconfig"
-#  bits_target=64
-#  cross_prefix="$mingw_bin_path/x86_64-w64-mingw32-"
-#  make_prefix_options="CC=${cross_prefix}gcc AR=${cross_prefix}ar PREFIX=$mingw_w64_x86_64_prefix RANLIB=${cross_prefix}ranlib LD=${cross_prefix}ld STRIP=${cross_prefix}strip CXX=${cross_prefix}g++"
-#  mkdir -p x86_64
-#  cd x86_64
-#    build_dependencies
-#    build_apps
-#  cd ..
-#fi
 
-#echo "searching for all local exe's (some may not have been built this round, NB)..."
-#for file in $(find_all_build_exes); do
-#  echo "built $file"
-#done
-#echo "done!"
+if [[ $compiler_flavors == "multi" || $compiler_flavors == "win64" ]]; then
+  echo
+  echo "**************Starting 64-bit builds..." # make it have a bit easier to you can see when 32 bit is done 
+  host_target='x86_64-w64-mingw32'
+  mingw_w64_x86_64_prefix="$cur_dir/cross_compilers/mingw-w64-x86_64/$host_target"
+  mingw_bin_path="$cur_dir/cross_compilers/mingw-w64-x86_64/bin"
+  export PATH="$mingw_bin_path:$original_path"
+  export PKG_CONFIG_PATH="$cur_dir/cross_compilers/mingw-w64-x86_64/x86_64-w64-mingw32/lib/pkgconfig"
+  bits_target=64
+  cross_prefix="$mingw_bin_path/x86_64-w64-mingw32-"
+  make_prefix_options="CC=${cross_prefix}gcc AR=${cross_prefix}ar PREFIX=$mingw_w64_x86_64_prefix RANLIB=${cross_prefix}ranlib LD=${cross_prefix}ld STRIP=${cross_prefix}strip CXX=${cross_prefix}g++"
+  mkdir -p x86_64
+  cd x86_64
+    build_dependencies
+    build_apps
+  cd ..
+fi
+
+echo "searching for all local exe's (some may not have been built this round, NB)..."
+for file in $(find_all_build_exes); do
+  echo "built $file"
+done
+echo "done!"
 

@@ -2,6 +2,7 @@
 *.mp4
 *.mpg
 sandbox/
+temp_dir/
 
 
 # Vim files
