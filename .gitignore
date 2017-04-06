@@ -3,6 +3,7 @@
 *.mpg
 sandbox/
 temp_dir/
+medialooks/
 
 
 # Vim files

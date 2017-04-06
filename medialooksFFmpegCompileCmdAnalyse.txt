@@ -1,0 +1,37 @@
+The compile command was: --disable-static --enable-shared --enable-version3 --disable-w32threads --enable-avisynth --enable-bzlib --enable-fontconfig --enable-gnutls --enable-iconv --enable-libass --enable-libbluray --enable-libcaca --enable-libfreetype --enable-libgsm --enable-libilbc --enable-libmodplug --enable-libmp3lame --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libopus --enable-librtmp --enable-libschroedinger --enable-libsoxr --enable-libspeex --enable-libtheora --enable-libtwolame --enable-libvo-aacenc --enable-libvo-amrwbenc --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-zlib
+
+The compiler was GCC 4.8.2 with MinGW-w64 3.1.0
+
+--disable-static 
+--enable-shared 
+--enable-version3
+--disable-w32threads
+--enable-avisynth
+--enable-bzlib 
+--enable-fontconfig
+--enable-gnutls
+--enable-iconv
+--enable-libass
+--enable-libbluray
+--enable-libcaca
+--enable-libfreetype
+--enable-libgsm
+--enable-libilbc
+--enable-libmodplug
+--enable-libmp3lame
+--enable-libopencore-amrnb
+--enable-libopencore-amrwb
+--enable-libopenjpeg
+--enable-libopus
+--enable-librtmp
+--enable-libschroedinger
+--enable-libsoxr
+--enable-libspeex
+--enable-libtheora
+--enable-libtwolame
+--enable-libvo-aacenc
+--enable-libvo-amrwbenc
+--enable-libvorbis
+--enable-libvpx
+--enable-libwavpack
+--enable-zlib
