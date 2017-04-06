@@ -1,6 +1,7 @@
 *.yuv
 *.mp4
 *.mpg
+sandbox/
 
 
 # Vim files
