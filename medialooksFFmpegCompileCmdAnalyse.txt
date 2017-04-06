@@ -25,17 +25,17 @@ One line per build /config_option/
 --enable-libmp3lame             DONE
 --enable-libopencore-amrnb      DONE
 --enable-libopencore-amrwb      DONE
---enable-libopenjpeg                DONE
---enable-libopus                    DONE
---enable-librtmp                    DONE
---enable-libschroedinger            DONE
---enable-libsoxr                    DONE
+--enable-libopenjpeg            DONE
+--enable-libopus                DONE
+--enable-librtmp                DONE
+--enable-libschroedinger        DONE
+--enable-libsoxr                DONE
 --enable-libspeex               DONE
---enable-libtheora
+--enable-libtheora      DONE (when "making", fails on vp3huff test as it's a win32 exe; re-run, libtheora dir present so not "made"; libs exist)
 --enable-libtwolame
 --enable-libvo-aacenc
 --enable-libvo-amrwbenc
---enable-libvorbis
+--enable-libvorbis      DONE
 --enable-libvpx
 --enable-libwavpack
 --enable-zlib                   DONE

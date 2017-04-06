@@ -909,6 +909,7 @@ build_libspeex() {
 }  
 
 build_libtheora() {
+  # when "making", fails on vp3huff test as it's a win32 exe; re-run, libtheora dir present so not "made"; libs exist
   cpu_count=1 # can't handle it
   download_and_unpack_file http://downloads.xiph.org/releases/theora/libtheora-1.2.0alpha1.tar.gz 
   cd libtheora-1.2.0alpha1
@@ -1531,6 +1532,8 @@ build_ffmpeg() {
       --enable-libschroedinger \
       --enable-libsoxr \
       --enable-libspeex \
+      --enable-libtheora \
+      --enable-libvorbis \
       --enable-zlib"
 #  build_libdlfcn # ffmpeg's frei0r implentation needs this <sigh>
 #  build_libogg
@@ -1661,8 +1664,8 @@ build_dependencies() {
   build_libogg
   build_libspeexdsp # needs libogg for exe's
   build_libspeex # needs libspeexdsp
-#  build_libvorbis # needs libogg
-#  build_libtheora # needs libvorbis, libogg
+  build_libvorbis # needs libogg
+  build_libtheora # needs libvorbis, libogg
   build_orc
   build_libschroedinger # needs orc
   build_freetype # uses bz2/zlib seemingly
