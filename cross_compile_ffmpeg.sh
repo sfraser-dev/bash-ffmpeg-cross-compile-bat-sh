@@ -1503,10 +1503,27 @@ build_ffmpeg() {
   #config_options="$init_options --enable-libsoxr --enable-fontconfig --enable-libass --enable-libbluray --enable-iconv --enable-libtwolame --extra-cflags=-DLIBTWOLAME_STATIC --enable-libzvbi --enable-libcaca --enable-libmodplug --extra-libs=-lstdc++ --extra-libs=-lpng --enable-decklink --extra-libs=-loleaut32  --enable-libmp3lame --enable-version3 --enable-zlib --enable-librtmp --enable-libvorbis --enable-libtheora --enable-libspeex --enable-libopenjpeg --enable-gnutls  --enable-libgsm --enable-libfreetype --enable-libopus --enable-bzlib --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-libschroedinger --enable-libvpx --enable-libilbc --enable-libwavpack --enable-libwebp --enable-libgme --enable-dxva2 --enable-avisynth --enable-gray --enable-libopenh264 --enable-netcdf  --enable-libflite --enable-lzma --enable-libsnappy --enable-libzimg"
 
   # build quicker by compiling less
-  local sf_options="--disable-ffplay --disable-ffserver --disable-doc --disable-ffprobe"
-  # sf_options="$sf_options --disable-debug" # instead, set do_debug_build=n
+  local sf_options="\
+      --disable-ffplay \
+      --disable-ffserver \
+      --disable-ffprobe \
+      --disable-doc"
+  # sf_options="$sf_options --disable-debug" # instead, set do_debug_build=n (below)
 
-  config_options="$init_options $sf_options --enable-zlib --enable-bzlib"
+  config_options="$init_options $sf_options \
+      --enable-version3 \
+      --enable-bzlib \
+      --enable-fontconfig \
+      --enable-iconv \
+      --enable-libfreetype \
+      --enable-libspeex \
+      --enable-zlib"
+#  build_libdlfcn # ffmpeg's frei0r implentation needs this <sigh>
+#  build_libogg
+#  build_libspeexdsp # needs libogg for exe's
+#  build_libspeex # needs libspeexdsp
+#  build_libebur128 # needs speex # Now included in ffmpeg as internal library
+
   if [[ $enable_gpl == 'y' ]]; then
     config_options="$config_options --enable-gpl --enable-libx264 --enable-libx265 --enable-frei0r --enable-filter=frei0r --enable-librubberband --enable-libvidstab --enable-libxavs --enable-libxvid"
   fi
@@ -1612,7 +1629,7 @@ build_dependencies() {
 #  build_libpng # for openjpeg, needs zlib
 #  build_gmp # for libnettle
 #  build_libnettle # needs gmp
-#  build_iconv # mplayer I think needs it for freetype [just it though], vlc also wants it.  looks like ffmpeg can use it too...not sure what for :)
+  build_iconv # mplayer I think needs it for freetype [just it though], vlc also wants it.  looks like ffmpeg can use it too...not sure what for :)
 #  build_gnutls # needs libnettle, can use iconv it appears
 
 #  build_frei0r
@@ -1634,8 +1651,8 @@ build_dependencies() {
 #  build_libtheora # needs libvorbis, libogg
 #  build_orc
 #  build_libschroedinger # needs orc
-#  build_freetype # uses bz2/zlib seemingly
-#  build_libexpat
+  build_freetype # uses bz2/zlib seemingly
+  build_libexpat
 #  build_libxml2
 #  build_libbluray # needs libxml2, freetype
   # build_libjpeg_turbo # mplayer can use this, VLC qt might need it? [replaces libjpeg]
@@ -1661,7 +1678,7 @@ build_dependencies() {
 #  build_libvpx
 #  build_libdecklink
 #  build_libilbc
-#  build_fontconfig # needs expat, needs freetype (at least uses it if available), can use iconv, but I believe doesn't currently
+  build_fontconfig # needs expat, needs freetype (at least uses it if available), can use iconv, but I believe doesn't currently
 #  build_libfribidi
 #  build_libass # needs freetype, needs fribidi, needs fontconfig
 #  build_libopenjpeg

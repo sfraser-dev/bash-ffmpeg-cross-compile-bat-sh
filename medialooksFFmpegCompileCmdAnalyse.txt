@@ -2,19 +2,23 @@ The compile command was: --disable-static --enable-shared --enable-version3 --di
 
 The compiler was GCC 4.8.2 with MinGW-w64 3.1.0
 
---disable-static 
---enable-shared 
---enable-version3
---disable-w32threads
---enable-avisynth
---enable-bzlib 
---enable-fontconfig
+*****
+*****
+
+One line per build /config_option/
+--disable-static                NO, --enable-static
+--enable-shared                 NO, --disbale-shared
+--enable-version3               DONE
+--disable-w32threads            DONE
+--enable-avisynth               NO, get error message: "avisynth is gpl and --enable-gpl is not specified."
+--enable-bzlib                  DONE
+--enable-fontconfig             DONE
 --enable-gnutls
---enable-iconv
+--enable-iconv                  DONE
 --enable-libass
 --enable-libbluray
 --enable-libcaca
---enable-libfreetype
+--enable-libfreetype            DONE
 --enable-libgsm
 --enable-libilbc
 --enable-libmodplug
@@ -26,7 +30,7 @@ The compiler was GCC 4.8.2 with MinGW-w64 3.1.0
 --enable-librtmp
 --enable-libschroedinger
 --enable-libsoxr
---enable-libspeex
+--enable-libspeex               DONE
 --enable-libtheora
 --enable-libtwolame
 --enable-libvo-aacenc
@@ -34,4 +38,4 @@ The compiler was GCC 4.8.2 with MinGW-w64 3.1.0
 --enable-libvorbis
 --enable-libvpx
 --enable-libwavpack
---enable-zlib
+--enable-zlib                   DONE
