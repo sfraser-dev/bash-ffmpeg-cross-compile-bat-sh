@@ -1525,6 +1525,11 @@ build_ffmpeg() {
       --enable-libmodplug \
       --enable-libopencore-amrnb \
       --enable-libopencore-amrwb \
+      --enable-libopenjpeg \
+      --enable-libopus \
+      --enable-librtmp \
+      --enable-libschroedinger \
+      --enable-libsoxr \
       --enable-libspeex \
       --enable-zlib"
 #  build_libdlfcn # ffmpeg's frei0r implentation needs this <sigh>
@@ -1635,7 +1640,7 @@ build_dependencies() {
 #  build_liblzma
 #  build_libzimg
 #  build_libsnappy
-#  build_libpng # for openjpeg, needs zlib
+  build_libpng # for openjpeg, needs zlib
   build_gmp # for libnettle
   build_libnettle # needs gmp
   build_iconv # mplayer I think needs it for freetype [just it though], vlc also wants it.  looks like ffmpeg can use it too...not sure what for :)
@@ -1651,15 +1656,15 @@ build_dependencies() {
   build_libgsm
 #  build_sdl 
 #  build_sdl2 # needed for ffplay to be created
-#  build_libopus
+  build_libopus
   build_libopencore
   build_libogg
   build_libspeexdsp # needs libogg for exe's
   build_libspeex # needs libspeexdsp
 #  build_libvorbis # needs libogg
 #  build_libtheora # needs libvorbis, libogg
-#  build_orc
-#  build_libschroedinger # needs orc
+  build_orc
+  build_libschroedinger # needs orc
   build_freetype # uses bz2/zlib seemingly
   build_libexpat
   build_libxml2
@@ -1667,7 +1672,7 @@ build_dependencies() {
   # build_libjpeg_turbo # mplayer can use this, VLC qt might need it? [replaces libjpeg]
 #  build_libxvid
 #  build_libxavs
-#  build_libsoxr
+  build_libsoxr
   build_libebur128 # needs speex # Now included in ffmpeg as internal library
 #  build_libx265
 #  build_libopenh264
@@ -1690,7 +1695,7 @@ build_dependencies() {
   build_fontconfig # needs expat, needs freetype (at least uses it if available), can use iconv, but I believe doesn't currently
   build_libfribidi
   build_libass # needs freetype, needs fribidi, needs fontconfig
-#  build_libopenjpeg
+  build_libopenjpeg
   if [[ $build_intel_qsv = y ]]; then
     build_intel_quicksync_mfx
   fi
@@ -1699,7 +1704,7 @@ build_dependencies() {
 #    # build_faac # not included for now, too poor quality output :)
 #  fi
 #  # build_openssl # hopefully do not need it anymore, since we use gnutls everywhere, so just don't even build it anymore...
-#  build_librtmp # needs gnutls [or openssl...]
+  build_librtmp # needs gnutls [or openssl...]
 #  build_libx264 # at bottom as it might build an ffmpeg which needs all the above deps...
 }
 

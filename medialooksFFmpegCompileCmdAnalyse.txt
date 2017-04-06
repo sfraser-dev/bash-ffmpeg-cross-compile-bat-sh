@@ -19,17 +19,17 @@ One line per build /config_option/
 --enable-libbluray              DONE
 --enable-libcaca                DONE
 --enable-libfreetype            DONE
---enable-libgsm                     DONE
---enable-libilbc                    DONE
---enable-libmodplug                 DONE
---enable-libmp3lame                 DONE
---enable-libopencore-amrnb          DONE
---enable-libopencore-amrwb          DONE
---enable-libopenjpeg
---enable-libopus
---enable-librtmp
---enable-libschroedinger
---enable-libsoxr
+--enable-libgsm                 DONE
+--enable-libilbc                DONE
+--enable-libmodplug             DONE
+--enable-libmp3lame             DONE
+--enable-libopencore-amrnb      DONE
+--enable-libopencore-amrwb      DONE
+--enable-libopenjpeg                DONE
+--enable-libopus                    DONE
+--enable-librtmp                    DONE
+--enable-libschroedinger            DONE
+--enable-libsoxr                    DONE
 --enable-libspeex               DONE
 --enable-libtheora
 --enable-libtwolame
