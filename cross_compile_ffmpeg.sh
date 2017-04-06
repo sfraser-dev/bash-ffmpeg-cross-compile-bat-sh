@@ -1500,44 +1500,45 @@ build_ffmpeg() {
   fi
 
   init_options="--arch=$arch --target-os=mingw32 --cross-prefix=$cross_prefix --pkg-config=pkg-config --disable-w32threads"
-  config_options="$init_options --enable-libsoxr --enable-fontconfig --enable-libass --enable-libbluray --enable-iconv --enable-libtwolame --extra-cflags=-DLIBTWOLAME_STATIC --enable-libzvbi --enable-libcaca --enable-libmodplug --extra-libs=-lstdc++ --extra-libs=-lpng --enable-decklink --extra-libs=-loleaut32  --enable-libmp3lame --enable-version3 --enable-zlib --enable-librtmp --enable-libvorbis --enable-libtheora --enable-libspeex --enable-libopenjpeg --enable-gnutls  --enable-libgsm --enable-libfreetype --enable-libopus --enable-bzlib --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-libschroedinger --enable-libvpx --enable-libilbc --enable-libwavpack --enable-libwebp --enable-libgme --enable-dxva2 --enable-avisynth --enable-gray --enable-libopenh264 --enable-netcdf  --enable-libflite --enable-lzma --enable-libsnappy --enable-libzimg"
+  #config_options="$init_options --enable-libsoxr --enable-fontconfig --enable-libass --enable-libbluray --enable-iconv --enable-libtwolame --extra-cflags=-DLIBTWOLAME_STATIC --enable-libzvbi --enable-libcaca --enable-libmodplug --extra-libs=-lstdc++ --extra-libs=-lpng --enable-decklink --extra-libs=-loleaut32  --enable-libmp3lame --enable-version3 --enable-zlib --enable-librtmp --enable-libvorbis --enable-libtheora --enable-libspeex --enable-libopenjpeg --enable-gnutls  --enable-libgsm --enable-libfreetype --enable-libopus --enable-bzlib --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-libschroedinger --enable-libvpx --enable-libilbc --enable-libwavpack --enable-libwebp --enable-libgme --enable-dxva2 --enable-gray --enable-libopenh264 --enable-netcdf  --enable-libflite --enable-lzma --enable-libsnappy --enable-libzimg"
+  config_options="$init_options --enable-zlib --enable-bzlib"
   if [[ $enable_gpl == 'y' ]]; then
-    config_options="$config_options --enable-gpl --enable-libx264 --enable-libx265 --enable-frei0r --enable-filter=frei0r --enable-librubberband --enable-libvidstab --enable-libxavs --enable-libxvid"
+    config_options="$config_options --enable-gpl --enable-libx264 --enable-libx265 --enable-frei0r --enable-filter=frei0r --enable-librubberband --enable-libvidstab --enable-libxavs --enable-libxvid --enable-avisynth"
   fi
   # other possibilities (you'd need to also uncomment the call to their build method): 
   #   --enable-w32threads # [worse UDP than pthreads, so not using that] 
   if [[ $build_intel_qsv = y ]]; then
     config_options="$config_options --enable-libmfx" # [note, not windows xp friendly]
   fi
-  config_options="$config_options --enable-avresample" # guess this is some kind of libav specific thing (the FFmpeg fork) but L-Smash needs it so why not always build it :)
+###  config_options="$config_options --enable-avresample" # guess this is some kind of libav specific thing (the FFmpeg fork) but L-Smash needs it so why not always build it :)
   
-  config_options="$config_options --extra-libs=-lpsapi" # dlfcn [frei0r?] requires this, has no .pc file should put in frei0r.pc? ...
-  config_options="$config_options --extra-libs=-lspeexdsp" # libebur :|
-  for i in $CFLAGS; do
-    config_options="$config_options --extra-cflags=$i" # --extra-cflags may not be needed here, but adds it to the final console output which I like for debugging purposes
-  done
+###  config_options="$config_options --extra-libs=-lpsapi" # dlfcn [frei0r?] requires this, has no .pc file should put in frei0r.pc? ...
+###  config_options="$config_options --extra-libs=-lspeexdsp" # libebur :|
+###  for i in $CFLAGS; do
+###    config_options="$config_options --extra-cflags=$i" # --extra-cflags may not be needed here, but adds it to the final console output which I like for debugging purposes
+###  done
 
   config_options="$config_options $postpend_configure_opts"
 
-  if [[ "$non_free" = "y" ]]; then
-    config_options="$config_options --enable-nonfree --enable-libfdk-aac " 
+###  if [[ "$non_free" = "y" ]]; then
+###    config_options="$config_options --enable-nonfree --enable-libfdk-aac " 
     # libfaac deemed too poor quality and becomes the default if included -- add it in and uncomment the build_faac line to include it, if anybody ever wants it... 
     # To use fdk-aac in VLC, we need to change FFMPEG's default (aac), but I haven't found how to do that... So I disabled it. This could be an new option for the script? (was --disable-decoder=aac )
     # other possible options: --enable-openssl [unneeded since we use gnutls] 
     #  apply_patch https://raw.githubusercontent.com/rdp/ffmpeg-windows-build-helpers/master/patches/nvresize2.patch "-p1" # uncomment if you want to test nvresize filter [et al] http://ffmpeg.org/pipermail/ffmpeg-devel/2015-November/182781.html patch worked with 7ab37cae34b3845
-  fi
+###  fi
 
-  config_options="$config_options --enable-runtime-cpudetect" # not sure what this even does but this is the most compatible
+###  config_options="$config_options --enable-runtime-cpudetect" # not sure what this even does but this is the most compatible
 
   do_debug_build=n # if you need one for backtraces/examining segfaults using gdb.exe ... change this to y :) XXXX make it affect x264 too...and make it param
-  if [[ "$do_debug_build" = "y" ]]; then
+###  if [[ "$do_debug_build" = "y" ]]; then
     # not sure how many of these are actually needed/useful...possibly none LOL
-    config_options="$config_options --disable-optimizations --extra-cflags=-Og --extra-cflags=-fno-omit-frame-pointer --enable-debug=3 --extra-cflags=-fno-inline $postpend_configure_opts"
+###    config_options="$config_options --disable-optimizations --extra-cflags=-Og --extra-cflags=-fno-omit-frame-pointer --enable-debug=3 --extra-cflags=-fno-inline $postpend_configure_opts"
     # this one kills gdb workability for static build? ai ai [?] XXXX
-    config_options="$config_options --disable-libgme"
-  fi
-  config_options="$config_options $extra_postpend_configure_options"
- 
+###    config_options="$config_options --disable-libgme"
+###  fi
+###  config_options="$config_options $extra_postpend_configure_options"
+
   do_configure "$config_options"
   rm -f */*.a */*.dll *.exe # just in case some dependency library has changed, force it to re-link even if the ffmpeg source hasn't changed...
   rm -f already_ran_make*
@@ -1600,252 +1601,306 @@ build_dependencies() {
   build_libdlfcn # ffmpeg's frei0r implentation needs this <sigh>
   build_zlib # rtmp depends on it [as well as ffmpeg's optional but handy --enable-zlib]
   build_bzlib2 # in case someone wants it [ffmpeg uses it]
-  build_liblzma
-  build_libzimg
-  build_libsnappy
-  build_libpng # for openjpeg, needs zlib
-  build_gmp # for libnettle
-  build_libnettle # needs gmp
-  build_iconv # mplayer I think needs it for freetype [just it though], vlc also wants it.  looks like ffmpeg can use it too...not sure what for :)
-  build_gnutls # needs libnettle, can use iconv it appears
+#  build_liblzma
+#  build_libzimg
+#  build_libsnappy
+#  build_libpng # for openjpeg, needs zlib
+#  build_gmp # for libnettle
+#  build_libnettle # needs gmp
+#  build_iconv # mplayer I think needs it for freetype [just it though], vlc also wants it.  looks like ffmpeg can use it too...not sure what for :)
+#  build_gnutls # needs libnettle, can use iconv it appears
 
-  build_frei0r
-  build_libsndfile
-  build_libbs2b # needs libsndfile
-  build_wavpack
-  build_libgme_game_music_emu
-  build_libwebp
-  build_libflite # not for now till after rubberband
-  build_libgsm
-  build_sdl 
-  build_sdl2 # needed for ffplay to be created
-  build_libopus
-  build_libopencore
-  build_libogg
-  build_libspeexdsp # needs libogg for exe's
-  build_libspeex # needs libspeexdsp
-  build_libvorbis # needs libogg
-  build_libtheora # needs libvorbis, libogg
-  build_orc
-  build_libschroedinger # needs orc
-  build_freetype # uses bz2/zlib seemingly
-  build_libexpat
-  build_libxml2
-  build_libbluray # needs libxml2, freetype
+#  build_frei0r
+#  build_libsndfile
+#  build_libbs2b # needs libsndfile
+#  build_wavpack
+#  build_libgme_game_music_emu
+#  build_libwebp
+#  build_libflite # not for now till after rubberband
+#  build_libgsm
+#  build_sdl 
+#  build_sdl2 # needed for ffplay to be created
+#  build_libopus
+#  build_libopencore
+#  build_libogg
+#  build_libspeexdsp # needs libogg for exe's
+#  build_libspeex # needs libspeexdsp
+#  build_libvorbis # needs libogg
+#  build_libtheora # needs libvorbis, libogg
+#  build_orc
+#  build_libschroedinger # needs orc
+#  build_freetype # uses bz2/zlib seemingly
+#  build_libexpat
+#  build_libxml2
+#  build_libbluray # needs libxml2, freetype
   # build_libjpeg_turbo # mplayer can use this, VLC qt might need it? [replaces libjpeg]
-  build_libxvid
-  build_libxavs
-  build_libsoxr
+#  build_libxvid
+#  build_libxavs
+#  build_libsoxr
   #build_libebur128 # needs speex # Now included in ffmpeg as internal library
-  build_libx265
-  build_libopenh264
+#  build_libx265
+#  build_libopenh264
 
-  build_vamp_plugin # requires libsndfile
-  build_fftw
-  build_libsamplerate
-  build_librubberband # needs libsndfile, vamp_plugin [though it never uses it], fftw, libsamplerate [some of which it doesn't have to use, but configure require they be installed, so we use them anyway...gah]
+#  build_vamp_plugin # requires libsndfile
+#  build_fftw
+#  build_libsamplerate
+#  build_librubberband # needs libsndfile, vamp_plugin [though it never uses it], fftw, libsamplerate [some of which it doesn't have to use, but configure require they be installed, so we use them anyway...gah]
 
-  build_lame
-  build_twolame
-  build_vidstab
-  build_netcdf
-  build_libcaca
-  build_libmodplug # ffmepg and vlc can use this
-  build_zvbi
-  build_libvpx
-  build_libdecklink
-  build_libilbc
-  build_fontconfig # needs expat, needs freetype (at least uses it if available), can use iconv, but I believe doesn't currently
-  build_libfribidi
-  build_libass # needs freetype, needs fribidi, needs fontconfig
-  build_libopenjpeg
+#  build_lame
+#  build_twolame
+#  build_vidstab
+#  build_netcdf
+#  build_libcaca
+#  build_libmodplug # ffmepg and vlc can use this
+#  build_zvbi
+#  build_libvpx
+#  build_libdecklink
+#  build_libilbc
+#  build_fontconfig # needs expat, needs freetype (at least uses it if available), can use iconv, but I believe doesn't currently
+#  build_libfribidi
+#  build_libass # needs freetype, needs fribidi, needs fontconfig
+#  build_libopenjpeg
   if [[ $build_intel_qsv = y ]]; then
     build_intel_quicksync_mfx
   fi
-  if [[ "$non_free" = "y" ]]; then
-    build_fdk_aac
-    # build_faac # not included for now, too poor quality output :)
-  fi
-  # build_openssl # hopefully do not need it anymore, since we use gnutls everywhere, so just don't even build it anymore...
-  build_librtmp # needs gnutls [or openssl...]
-  build_libx264 # at bottom as it might build an ffmpeg which needs all the above deps...
+#  if [[ "$non_free" = "y" ]]; then
+#    build_fdk_aac
+#    # build_faac # not included for now, too poor quality output :)
+#  fi
+#  # build_openssl # hopefully do not need it anymore, since we use gnutls everywhere, so just don't even build it anymore...
+#  build_librtmp # needs gnutls [or openssl...]
+#  build_libx264 # at bottom as it might build an ffmpeg which needs all the above deps...
 }
 
 build_apps() {
   if [[ $build_dvbtee = "y" ]]; then
+    echo build_dvbtee_app
     build_dvbtee_app
+    echo
   fi
   # now the things that use the dependencies...
   if [[ $build_libmxf = "y" ]]; then
+    echo build_libMXF
     build_libMXF
+    echo
   fi
   if [[ $build_mp4box = "y" ]]; then
+    echo build_mp4box
     build_mp4box
+    echo
   fi
   if [[ $build_mplayer = "y" ]]; then
+    echo build_mplayer
     build_mplayer
+    echo
   fi
   if [[ $build_ffmpeg_static = "y" ]]; then
-    build_ffmpeg 
+    echo build_ffmpeg static
+    build_ffmpeg static
+    echo
   fi
   if [[ $build_ffmpeg_shared = "y" ]]; then
+    echo build_ffmpeg shared
     build_ffmpeg shared
+    echo
   fi
   if [[ $build_vlc = "y" ]]; then
+    echo build_vlc
     build_vlc
+    echo
   fi
   if [[ $build_lsw = "y" ]]; then
+    echo build_lsw
     build_lsw
+    echo
   fi  
 }
 
+## START
 ## set some parameters initial values
-#cur_dir="$(pwd)/sandbox"
-#cpu_count="$(grep -c processor /proc/cpuinfo 2>/dev/null)" # linux cpu count
-#if [ -z "$cpu_count" ]; then
-#  cpu_count=`sysctl -n hw.ncpu | tr -d '\n'` # OS X
-#  if [ -z "$cpu_count" ]; then
-#    echo "warning, unable to determine cpu count, defaulting to 1"
-#    cpu_count=1 # else default to just 1, instead of blank, which means infinite 
-#  fi
-#fi
-#original_cpu_count=$cpu_count # save it away for some that revert it temporarily
+cur_dir="$(pwd)/sandbox"
+echo cur_dir = $cur_dir
+cpu_count="$(grep -c processor /proc/cpuinfo 2>/dev/null)" # linux cpu count
+if [ -z "$cpu_count" ]; then
+  cpu_count=`sysctl -n hw.ncpu | tr -d '\n'` # OS X
+  if [ -z "$cpu_count" ]; then
+    echo "warning, unable to determine cpu count, defaulting to 1"
+    cpu_count=1 # else default to just 1, instead of blank, which means infinite 
+  fi
+fi
+original_cpu_count=$cpu_count # save it away for some that revert it temporarily
+echo original_cpu_count = $original_cpu_count
 
-##set_box_memory_size_bytes
-#if [[ $box_memory_size_bytes -lt 600000000 ]]; then
-#  echo "your box only has $box_memory_size_bytes, 512MB (only) boxes crash when building cross compiler gcc, please add some swap" # 1G worked OK however...
-#  exit 1
-#fi
+set_box_memory_size_bytes
+if [[ $box_memory_size_bytes -lt 600000000 ]]; then
+  echo "your box only has $box_memory_size_bytes, 512MB (only) boxes crash when building cross compiler gcc, please add some swap" # 1G worked OK however...
+  exit 1
+fi
 
-#if [[ $box_memory_size_bytes -gt 2000000000 ]]; then
-#  gcc_cpu_count=$cpu_count # they can handle it seemingly...
-#else
-#  echo "low RAM detected so using only one cpu for gcc compilation"
-#  gcc_cpu_count=1 # compatible low RAM...
-#fi
+if [[ $box_memory_size_bytes -gt 2000000000 ]]; then
+  gcc_cpu_count=$cpu_count # they can handle it seemingly...
+else
+  echo "low RAM detected so using only one cpu for gcc compilation"
+  gcc_cpu_count=1 # compatible low RAM...
+fi
 
 ## variables with their defaults
-#build_ffmpeg_static=y
-#build_ffmpeg_shared=n
-#build_dvbtee=n
-#build_libmxf=n
-#build_mp4box=n
-#build_mplayer=n
-#build_vlc=n
-#build_lsw=n
-#git_get_latest=y
-#prefer_stable=y
-#build_intel_qsv=y
-##disable_nonfree=n # have no value by default to force user selection
+build_ffmpeg_static=y
+build_ffmpeg_shared=n
+build_dvbtee=n
+build_libmxf=n
+build_mp4box=n
+build_mplayer=n
+build_vlc=n
+build_lsw=n
+git_get_latest=n
+prefer_stable=y
+build_intel_qsv=y # intel / xp
+disable_nonfree=y # have no value by default to force user selection
 #original_cflags='-mtune=core2 -O3' #  be careful, these override lots of stuff in makesfiles :|
 ## if you specify a march it needs to first so x264's configure will use it :|
-#build_x264_with_libav=n
-#ffmpeg_git_checkout_version=
-#build_ismindex=n
-#enable_gpl=y
+build_x264_with_libav=n
+ffmpeg_git_checkout_version=
+build_ismindex=n
+enable_gpl=n
 
 ## parse command line parameters, if any
-#while true; do
-#  case $1 in
-#    -h | --help ) echo "available option=default_value: 
-#      --build-ffmpeg-static=y  (the "normal" ffmpeg.exe build, on by default)
-#      --build-ffmpeg-shared=n  (ffmpeg with .dll files as well as .exe files)
-#      --ffmpeg-git-checkout-version=[master] if you want to build a particular version of FFmpeg, ex: n3.1.1 or a specific git hash
-#      --gcc-cpu-count=[number of cpu cores set it higher than 1 if you have multiple cores and > 1GB RAM, this speeds up initial cross compiler build. FFmpeg build uses number of cores no matter what] 
-#      --disable-nonfree=y (set to n to include nonfree like libfdk-aac) 
-#      --build-intel-qsv=y (set to y to include the [non windows xp compat.] qsv library and ffmpeg module. NB this not not hevc_qsv...
-#      --sandbox-ok=n [skip sandbox prompt if y] 
-#      -d [meaning \"defaults\" skip all prompts, just build ffmpeg static with some reasonable defaults like no git updates] 
-#      --build-libmxf=n [builds libMXF, libMXF++, writeavidmxfi.exe and writeaviddv50.exe from the BBC-Ingex project] 
-#      --build-mp4box=n [builds MP4Box.exe from the gpac project] 
-#      --build-mplayer=n [builds mplayer.exe and mencoder.exe] 
-#      --build-vlc=n [builds a [rather bloated] vlc.exe] 
-#      --build-lsw=n [builds L-Smash Works VapourSynth and AviUtl plugins]
-#      --build-ismindex=n [builds ffmpeg utility ismindex.exe]
-#      -a 'build all' builds ffmpeg, mplayer, vlc, etc. with all fixings turned on
-#      --build-dvbtee=n [build dvbtee.exe a DVB profiler]
-#      --compiler-flavors=[multi,win32,win64] [default prompt, or skip if you already have one built, multi is both win32 and win64]
-#      --cflags=[default is $original_cflags, which works on any cpu, see README for options]
-#      --git-get-latest=y [do a git pull for latest code from repositories like FFmpeg--can force a rebuild if changes are detected]
-#      --build-x264-with-libav=n build x264.exe with bundled/included "libav" ffmpeg libraries within it
-#      --prefer-stable=y build a few libraries from releases instead of git master
-#      --high-bitdepth=n Enable high bit depth for x264 (10 bits) and x265 (10 and 12 bits, x64 build. Not officially supported on x86 (win32), but enabled by disabling its assembly).
-#      --debug Make this script  print out each line as it executes
-#      --enable-gpl=[y] set to n to do an lgpl build
-#       "; exit 0 ;;
-#    --sandbox-ok=* ) sandbox_ok="${1#*=}"; shift ;;
-#    --gcc-cpu-count=* ) gcc_cpu_count="${1#*=}"; shift ;;
-#    --ffmpeg-git-checkout-version=* ) ffmpeg_git_checkout_version="${1#*=}"; shift ;;
-#    --build-libmxf=* ) build_libmxf="${1#*=}"; shift ;;
-#    --build-mp4box=* ) build_mp4box="${1#*=}"; shift ;;
-#    --build-ismindex=* ) build_ismindex="${1#*=}"; shift ;;
-#    --git-get-latest=* ) git_get_latest="${1#*=}"; shift ;;
-#    --build-intel-qsv=* ) build_intel_qsv="${1#*=}"; shift ;;
-#    --build-x264-with-libav=* ) build_x264_with_libav="${1#*=}"; shift ;;
-#    --build-mplayer=* ) build_mplayer="${1#*=}"; shift ;;
-#    --cflags=* ) 
-#       original_cflags="${1#*=}"; echo "setting cflags as $original_cflags"; shift ;;
-#    --build-vlc=* ) build_vlc="${1#*=}"; shift ;;
-#    --build-lsw=* ) build_lsw="${1#*=}"; shift ;;
-#    --build-dvbtee=* ) build_dvbtee="${1#*=}"; shift ;;
-#    --disable-nonfree=* ) disable_nonfree="${1#*=}"; shift ;;
-#    # this doesn't actually "build all", like doesn't build 10 high-bit LGPL ffmpeg, but it does exercise the "non default" type build options...
-#    -a         ) compiler_flavors="multi"; build_mplayer=y; build_libmxf=y; build_mp4box=y; build_vlc=y; build_lsw=y; build_ffmpeg_shared=y; high_bitdepth=y; build_ffmpeg_static=y; build_lws=y;
-#                 disable_nonfree=n; git_get_latest=y; sandbox_ok=y; build_intel_qsv=y; build_dvbtee=y; build_x264_with_libav=y; shift ;;
-#    -d         ) gcc_cpu_count=$cpu_count; disable_nonfree="y"; sandbox_ok="y"; compiler_flavors="win32"; git_get_latest="n"; shift ;;
-#    --compiler-flavors=* ) compiler_flavors="${1#*=}"; shift ;;
-#    --build-ffmpeg-static=* ) build_ffmpeg_static="${1#*=}"; shift ;;
-#    --build-ffmpeg-shared=* ) build_ffmpeg_shared="${1#*=}"; shift ;;
-#    --prefer-stable=* ) prefer_stable="${1#*=}"; shift ;;
-#    --enable-gpl=* ) enable_gpl="${1#*=}"; shift ;;
-#    --high-bitdepth=* ) high_bitdepth="${1#*=}"; shift ;;
-#    --debug ) set -x; shift ;;
-#    -- ) shift; break ;;
-#    -* ) echo "Error, unknown option: '$1'."; exit 1 ;;
-#    * ) break ;;
-#  esac
-#done
+while true; do
+  case $1 in
+    -h | --help ) echo "available option=default_value: 
+      --build-ffmpeg-static=y  (the "normal" ffmpeg.exe build, on by default)
+      --build-ffmpeg-shared=n  (ffmpeg with .dll files as well as .exe files)
+      --ffmpeg-git-checkout-version=[master] if you want to build a particular version of FFmpeg, ex: n3.1.1 or a specific git hash
+      --gcc-cpu-count=[number of cpu cores set it higher than 1 if you have multiple cores and > 1GB RAM, this speeds up initial cross compiler build. FFmpeg build uses number of cores no matter what] 
+      --disable-nonfree=y (set to n to include nonfree like libfdk-aac) 
+      --build-intel-qsv=y (set to y to include the [non windows xp compat.] qsv library and ffmpeg module. NB this not not hevc_qsv...
+      --sandbox-ok=n [skip sandbox prompt if y] 
+      -d [meaning \"defaults\" skip all prompts, just build ffmpeg static with some reasonable defaults like no git updates] 
+      --build-libmxf=n [builds libMXF, libMXF++, writeavidmxfi.exe and writeaviddv50.exe from the BBC-Ingex project] 
+      --build-mp4box=n [builds MP4Box.exe from the gpac project] 
+      --build-mplayer=n [builds mplayer.exe and mencoder.exe] 
+      --build-vlc=n [builds a [rather bloated] vlc.exe] 
+      --build-lsw=n [builds L-Smash Works VapourSynth and AviUtl plugins]
+      --build-ismindex=n [builds ffmpeg utility ismindex.exe]
+      -a 'build all' builds ffmpeg, mplayer, vlc, etc. with all fixings turned on
+      --build-dvbtee=n [build dvbtee.exe a DVB profiler]
+      --compiler-flavors=[multi,win32,win64] [default prompt, or skip if you already have one built, multi is both win32 and win64]
+      --cflags=[default is $original_cflags, which works on any cpu, see README for options]
+      --git-get-latest=y [do a git pull for latest code from repositories like FFmpeg--can force a rebuild if changes are detected]
+      --build-x264-with-libav=n build x264.exe with bundled/included "libav" ffmpeg libraries within it
+      --prefer-stable=y build a few libraries from releases instead of git master
+      --high-bitdepth=n Enable high bit depth for x264 (10 bits) and x265 (10 and 12 bits, x64 build. Not officially supported on x86 (win32), but enabled by disabling its assembly).
+      --debug Make this script  print out each line as it executes
+      --enable-gpl=[y] set to n to do an lgpl build
+       "; exit 0 ;;
+    --sandbox-ok=* ) sandbox_ok="${1#*=}"; shift ;;
+    --gcc-cpu-count=* ) gcc_cpu_count="${1#*=}"; shift ;;
+    --ffmpeg-git-checkout-version=* ) ffmpeg_git_checkout_version="${1#*=}"; shift ;;
+    --build-libmxf=* ) build_libmxf="${1#*=}"; shift ;;
+    --build-mp4box=* ) build_mp4box="${1#*=}"; shift ;;
+    --build-ismindex=* ) build_ismindex="${1#*=}"; shift ;;
+    --git-get-latest=* ) git_get_latest="${1#*=}"; shift ;;
+    --build-intel-qsv=* ) build_intel_qsv="${1#*=}"; shift ;;
+    --build-x264-with-libav=* ) build_x264_with_libav="${1#*=}"; shift ;;
+    --build-mplayer=* ) build_mplayer="${1#*=}"; shift ;;
+    --cflags=* ) 
+       original_cflags="${1#*=}"; echo "setting cflags as $original_cflags"; shift ;;
+    --build-vlc=* ) build_vlc="${1#*=}"; shift ;;
+    --build-lsw=* ) build_lsw="${1#*=}"; shift ;;
+    --build-dvbtee=* ) build_dvbtee="${1#*=}"; shift ;;
+    --disable-nonfree=* ) disable_nonfree="${1#*=}"; shift ;;
+    # this doesn't actually "build all", like doesn't build 10 high-bit LGPL ffmpeg, but it does exercise the "non default" type build options...
+    -a         ) compiler_flavors="multi"; build_mplayer=y; build_libmxf=y; build_mp4box=y; build_vlc=y; build_lsw=y; build_ffmpeg_shared=y; high_bitdepth=y; build_ffmpeg_static=y; build_lws=y;
+                 disable_nonfree=n; git_get_latest=y; sandbox_ok=y; build_intel_qsv=y; build_dvbtee=y; build_x264_with_libav=y; shift ;;
+    -d         ) gcc_cpu_count=$cpu_count; disable_nonfree="y"; sandbox_ok="y"; compiler_flavors="win32"; git_get_latest="n"; shift ;;
+    --compiler-flavors=* ) compiler_flavors="${1#*=}"; shift ;;
+    --build-ffmpeg-static=* ) build_ffmpeg_static="${1#*=}"; shift ;;
+    --build-ffmpeg-shared=* ) build_ffmpeg_shared="${1#*=}"; shift ;;
+    --prefer-stable=* ) prefer_stable="${1#*=}"; shift ;;
+    --enable-gpl=* ) enable_gpl="${1#*=}"; shift ;;
+    --high-bitdepth=* ) high_bitdepth="${1#*=}"; shift ;;
+    --debug ) set -x; shift ;;
+    -- ) shift; break ;;
+    -* ) echo "Error, unknown option: '$1'."; exit 1 ;;
+    * ) break ;;
+  esac
+done
 
-#reset_cflags # also overrides any "native" CFLAGS, which we may need if there are some 'linux only' settings in there
-#check_missing_packages # do this first since it's annoying to go through prompts then be rejected
-#intro # remember to always run the intro, since it adjust pwd
+echo
+echo build_ffmpeg_static = $build_ffmpeg_static
+echo build_ffmpeg_shared = $build_ffmpeg_shared
+echo build_dvbtee = $build_dvbtee
+echo build_libmxf = $build_libmxf
+echo build_mp4box = $build_mp4box
+echo build_mplayer = $build_mplayer
+echo build_vlc = $build_vlc
+echo build_lsw = $build_lsw
+echo git_get_latest = $git_get_latest
+echo prefer_stable = $prefer_stable
+echo build_intel_qsv = $build_intel_qsv
+echo disable_nonfree = $disable_nonfree # have no value by default to force user selection
+echo original_cflags = $original_cflags #  be careful, these override lots of stuff in makesfiles :|
+## if you specify a march it needs to first so x264's configure will use it :|
+echo build_x264_with_libav = $build_x264_with_libav
+echo ffmpeg_git_checkout_version = $ffmpeg_git_checkout_version
+echo build_ismindex = $build_ismindex
+echo enable_gpl = $enable_gpl
+echo
+
+reset_cflags # also overrides any "native" CFLAGS, which we may need if there are some 'linux only' settings in there
+check_missing_packages # do this first since it's annoying to go through prompts then be rejected
+intro # remember to always run the intro, since it adjust pwd
+echo "cross compiler installed already"
 #install_cross_compiler 
+compiler_flavors=win32
+echo compiler_flavors = $compiler_flavors
+echo
 
-#export PKG_CONFIG_LIBDIR= # disable pkg-config from finding [and using] normal linux system installed libs [yikes]
+export PKG_CONFIG_LIBDIR= # disable pkg-config from finding [and using] normal linux system installed libs [yikes]
 
-#if [[ $OSTYPE == darwin* ]]; then 
-#  # mac add some helper scripts
-#  mkdir -p mac_helper_scripts
-#  cd mac_helper_scripts
-#    if [[ ! -x readlink ]]; then
-#      # make some scripts behave like linux...
-#      curl -4 https://raw.githubusercontent.com/rdp/ffmpeg-windows-build-helpers/master/patches/md5sum.mac --fail > md5sum  || exit 1
-#      chmod u+x ./md5sum
-#      curl -4 https://raw.githubusercontent.com/rdp/ffmpeg-windows-build-helpers/master/patches/readlink.mac --fail > readlink  || exit 1
-#      chmod u+x ./readlink
-#    fi
-#    export PATH=`pwd`:$PATH
-#  cd ..
-#fi
-#
-#original_path="$PATH"
-#if [[ $compiler_flavors == "multi" || $compiler_flavors == "win32" ]]; then
-#  echo 
-#  echo "Starting 32-bit builds..."
-#  host_target='i686-w64-mingw32'
-#  mingw_w64_x86_64_prefix="$cur_dir/cross_compilers/mingw-w64-i686/$host_target"
-#  mingw_bin_path="$cur_dir/cross_compilers/mingw-w64-i686/bin"
-#  export PKG_CONFIG_PATH="$cur_dir/cross_compilers/mingw-w64-i686/i686-w64-mingw32/lib/pkgconfig"
-#  export PATH="$mingw_bin_path:$original_path"
-#  bits_target=32
-#  cross_prefix="$mingw_bin_path/i686-w64-mingw32-"
-#  make_prefix_options="CC=${cross_prefix}gcc AR=${cross_prefix}ar PREFIX=$mingw_w64_x86_64_prefix RANLIB=${cross_prefix}ranlib LD=${cross_prefix}ld STRIP=${cross_prefix}strip CXX=${cross_prefix}g++"
-#  mkdir -p win32
-#  cd win32
-#    build_dependencies
-#    build_apps
-#  cd ..
-#fi
+if [[ $OSTYPE == darwin* ]]; then 
+  # mac add some helper scripts
+  mkdir -p mac_helper_scripts
+  cd mac_helper_scripts
+    if [[ ! -x readlink ]]; then
+      # make some scripts behave like linux...
+      curl -4 https://raw.githubusercontent.com/rdp/ffmpeg-windows-build-helpers/master/patches/md5sum.mac --fail > md5sum  || exit 1
+      chmod u+x ./md5sum
+      curl -4 https://raw.githubusercontent.com/rdp/ffmpeg-windows-build-helpers/master/patches/readlink.mac --fail > readlink  || exit 1
+      chmod u+x ./readlink
+    fi
+    export PATH=`pwd`:$PATH
+  cd ..
+fi
+
+echo
+original_path="$PATH"
+echo original_path = $original_path
+
+if [[ $compiler_flavors == "multi" || $compiler_flavors == "win32" ]]; then
+  echo 
+  echo "Starting 32-bit builds..."
+  host_target='i686-w64-mingw32'
+  mingw_w64_x86_64_prefix="$cur_dir/cross_compilers/mingw-w64-i686/$host_target"
+  mingw_bin_path="$cur_dir/cross_compilers/mingw-w64-i686/bin"
+  export PKG_CONFIG_PATH="$cur_dir/cross_compilers/mingw-w64-i686/i686-w64-mingw32/lib/pkgconfig"
+  export PATH="$mingw_bin_path:$original_path"
+  echo 
+  bits_target=32
+  echo bits_target = $bits_target
+  echo
+  cross_prefix="$mingw_bin_path/i686-w64-mingw32-"
+  make_prefix_options="CC=${cross_prefix}gcc AR=${cross_prefix}ar PREFIX=$mingw_w64_x86_64_prefix RANLIB=${cross_prefix}ranlib LD=${cross_prefix}ld STRIP=${cross_prefix}strip CXX=${cross_prefix}g++"
+  mkdir -p win32
+  cd win32
+    echo build_dependencies ...
+    build_dependencies
+    echo 
+    echo build_apps ...
+    build_apps
+    echo 
+  cd ..
+fi
 #
 #if [[ $compiler_flavors == "multi" || $compiler_flavors == "win64" ]]; then
 #  echo
