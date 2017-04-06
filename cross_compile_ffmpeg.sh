@@ -1520,6 +1520,11 @@ build_ffmpeg() {
       --enable-libbluray \
       --enable-libcaca \
       --enable-libfreetype \
+      --enable-libgsm \
+      --enable-libilbc \
+      --enable-libmodplug \
+      --enable-libopencore-amrnb \
+      --enable-libopencore-amrwb \
       --enable-libspeex \
       --enable-zlib"
 #  build_libdlfcn # ffmpeg's frei0r implentation needs this <sigh>
@@ -1643,11 +1648,11 @@ build_dependencies() {
 #  build_libgme_game_music_emu
 #  build_libwebp
 #  build_libflite # not for now till after rubberband
-#  build_libgsm
+  build_libgsm
 #  build_sdl 
 #  build_sdl2 # needed for ffplay to be created
 #  build_libopus
-#  build_libopencore
+  build_libopencore
   build_libogg
   build_libspeexdsp # needs libogg for exe's
   build_libspeex # needs libspeexdsp
@@ -1677,11 +1682,11 @@ build_dependencies() {
 #  build_vidstab
 #  build_netcdf
   build_libcaca
-#  build_libmodplug # ffmepg and vlc can use this
+  build_libmodplug # ffmepg and vlc can use this
 #  build_zvbi
 #  build_libvpx
 #  build_libdecklink
-#  build_libilbc
+  build_libilbc
   build_fontconfig # needs expat, needs freetype (at least uses it if available), can use iconv, but I believe doesn't currently
   build_libfribidi
   build_libass # needs freetype, needs fribidi, needs fontconfig
