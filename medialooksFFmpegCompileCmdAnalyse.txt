@@ -7,7 +7,7 @@ The compiler was GCC 4.8.2 with MinGW-w64 3.1.0
 
 One line per build /config_option/
 --disable-static            NO, --enable-static ($postpend_configure_opts)
---enable-shared             NO, --disbale-shared ($postpend_configure_opts)
+--enable-shared             NO, --disable-shared ($postpend_configure_opts)
 --enable-version3           DONE
 --disable-w32threads        DONE ($init_options)
 --enable-avisynth           NO, get error message: "avisynth is gpl and --enable-gpl is not specified."
