@@ -6,10 +6,10 @@ The compiler was GCC 4.8.2 with MinGW-w64 3.1.0
 *****
 
 One line per build /config_option/
---disable-static                NO, --enable-static
---enable-shared                 NO, --disbale-shared
+--disable-static                NO, --enable-static ($postpend_configure_opts)
+--enable-shared                 NO, --disbale-shared ($postpend_configure_opts)
 --enable-version3               DONE
---disable-w32threads            DONE
+--disable-w32threads            DONE ($init_options)
 --enable-avisynth               NO, get error message: "avisynth is gpl and --enable-gpl is not specified."
 --enable-bzlib                  DONE
 --enable-fontconfig             DONE
@@ -32,10 +32,10 @@ One line per build /config_option/
 --enable-libsoxr                DONE
 --enable-libspeex               DONE
 --enable-libtheora              DONE (when "making", fails on vp3huff test as it's a win32 exe; re-run, libtheora dir present so not "made"; libs exist)
---enable-libtwolame
---enable-libvo-aacenc
---enable-libvo-amrwbenc
+--enable-libtwolame             DONE
+--enable-libvo-aacenc               NO, as of FFmpeg 3.0 (Feb 2016), removed from FFmpeg, built in AAC encoder has superior quality and is no longer experimental (-c:a aac)
+--enable-libvo-amrwbenc             DONE
 --enable-libvorbis              DONE
---enable-libvpx
---enable-libwavpack
+--enable-libvpx                     DONE
+--enable-libwavpack                 DONE
 --enable-zlib                   DONE

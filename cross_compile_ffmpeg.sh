@@ -1535,7 +1535,11 @@ build_ffmpeg() {
       --enable-libspeex \
       --enable-libtheora \
       --enable-libtwolame --extra-cflags=-DLIBTWOLAME_STATIC \
+      --enable-libvo-amrwbenc \
       --enable-libvorbis \
+      --enable-libvo-amrwbenc \
+      --enable-libvpx \
+      --enable-libwavpack \
       --enable-zlib"
 #  build_libdlfcn # ffmpeg's frei0r implentation needs this <sigh>
 #  build_libogg
@@ -1654,7 +1658,7 @@ build_dependencies() {
 #  build_frei0r
 #  build_libsndfile
 #  build_libbs2b # needs libsndfile
-#  build_wavpack
+  build_wavpack
 #  build_libgme_game_music_emu
 #  build_libwebp
 #  build_libflite # not for now till after rubberband
@@ -1694,7 +1698,7 @@ build_dependencies() {
   build_libcaca
   build_libmodplug # ffmepg and vlc can use this
 #  build_zvbi
-#  build_libvpx
+  build_libvpx
 #  build_libdecklink
   build_libilbc
   build_fontconfig # needs expat, needs freetype (at least uses it if available), can use iconv, but I believe doesn't currently
