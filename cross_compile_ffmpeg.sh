@@ -92,12 +92,12 @@ intro() {
   If this is not ok, then exit now, and cd to the directory where you'd
   like them installed, then run this script again from there.  
   NB that once you build your compilers, you can no longer rename/move
-  the sandbox directory, since it will have some hard coded paths in there.
+  the xffmpeg directory, since it will have some hard coded paths in there.
   You can, of course, rebuild ffmpeg from within it, etc.
 EOL
-  if [[ $sandbox_ok != 'y' && ! -d sandbox ]]; then
+  if [[ $xffmpeg_ok != 'y' && ! -d xffmpeg ]]; then
     echo
-    echo "Building in $PWD/sandbox, will use ~ 10GB space!"
+    echo "Building in $PWD/xffmpeg, will use ~ 10GB space!"
     echo
   fi
   mkdir -p "$cur_dir"
@@ -113,6 +113,18 @@ The resultant binary may not be distributable, but can be useful for in-house us
       non_free="$user_input" # save it away
     fi
   fi
+}
+
+mingw_install_ask() {
+  while true; do
+    echo
+    read -p "Do you wish to install the mingw cross-compiler [Yy/Nn]?" yn
+    case $yn in
+        [Yy]* ) mingw_install_yn=1; break;;
+        [Nn]* ) mingw_install_yn=0; break;;
+        * ) echo "Please answer yes or no.";;
+    esac
+  done
 }
 
 pick_compiler_flavors() {
@@ -152,8 +164,8 @@ download_gcc_build_script() {
 }
 
 install_cross_compiler() {
-  local win32_gcc="cross_compilers/mingw-w64-i686/bin/i686-w64-mingw32-gcc"
-  local win64_gcc="cross_compilers/mingw-w64-x86_64/bin/x86_64-w64-mingw32-gcc"
+  local win32_gcc="$xcomp_dir/mingw-w64-i686/bin/i686-w64-mingw32-gcc"
+  local win64_gcc="$xcomp_dir/mingw-w64-x86_64/bin/x86_64-w64-mingw32-gcc"
   if [[ -f $win32_gcc && -f $win64_gcc ]]; then
    echo "MinGW-w64 compilers both already installed, not re-installing..."
    if [[ -z $compiler_flavors ]]; then
@@ -167,8 +179,8 @@ install_cross_compiler() {
     pick_compiler_flavors
   fi
 
-  mkdir -p cross_compilers
-  cd cross_compilers
+  mkdir -p $xcomp_dir
+  cd $xcomp_dir
 
     unset CFLAGS # don't want these "windows target" settings used the compiler itself since it creates executables to run on the local box (we have a parameter allowing them to set them for the script "all builds" basically)
     # pthreads version to avoid having to use cvs for it
@@ -185,7 +197,7 @@ install_cross_compiler() {
       download_gcc_build_script $zeranoe_script_name
       nice ./$zeranoe_script_name $zeranoe_script_options --build-type=win32 || exit 1
       if [[ ! -f ../$win32_gcc ]]; then
-        echo "failure building 32 bit gcc? recommend nuke sandbox (rm -rf sandbox) and start over..."
+        echo "failure building 32 bit gcc? recommend nuke xffmpeg (rm -rf xffmpeg) and start over..."
         exit 1
       fi
     fi
@@ -194,7 +206,7 @@ install_cross_compiler() {
       download_gcc_build_script $zeranoe_script_name
       nice ./$zeranoe_script_name $zeranoe_script_options --build-type=win64 || exit 1 
       if [[ ! -f ../$win64_gcc ]]; then
-        echo "failure building 64 bit gcc? recommend nuke sandbox (rm -rf sandbox) and start over..."
+        echo "failure building 64 bit gcc? recommend nuke xffmpeg (rm -rf xffmpeg) and start over..."
         exit 1
       fi
     fi
@@ -1407,7 +1419,7 @@ build_mp4box() { # like build_gpac
   sed -i.bak "s/has_dvb4linux=\"yes\"/has_dvb4linux=\"no\"/g" configure
   sed -i.bak "s/`uname -s`/MINGW32/g" configure
   # XXX do I want to disable more things here?
-  # ./sandbox/cross_compilers/mingw-w64-i686/bin/i686-w64-mingw32-sdl-config
+  # ./xffmpeg/$xcomp_dir/mingw-w64-i686/bin/i686-w64-mingw32-sdl-config
   generic_configure "--static-mp4box --enable-static-bin --disable-oss-audio --extra-ldflags=-municode --disable-x11 --sdl-cfg=${cross_prefix}sdl-config"
   # I seem unable to pass 3 libs into the same config line so do it with sed...
   sed -i.bak "s/EXTRALIBS=.*/EXTRALIBS=-lws2_32 -lwinmm -lz/g" config.mak
@@ -1630,7 +1642,7 @@ build_lsw() {
 
 find_all_build_exes() {
   local found=""
-# NB that we're currently in the sandbox dir...
+# NB that we're currently in the xffmpeg dir...
   for file in `find . -name ffmpeg.exe` `find . -name ffmpeg_g.exe` `find . -name ffplay.exe` `find . -name MP4Box.exe` `find . -name mplayer.exe` `find . -name mencoder.exe` `find . -name avconv.exe` `find . -name avprobe.exe` `find . -name x264.exe` `find . -name writeavidmxf.exe` `find . -name writeaviddv50.exe` `find . -name rtmpdump.exe` `find . -name x265.exe` `find . -name ismindex.exe` `find . -name dvbtee.exe` `find . -name boxdumper.exe` `find . -name muxer.exe ` `find . -name remuxer.exe` `find . -name timelineeditor.exe` `find . -name lwcolor.auc` `find . -name lwdumper.auf` `find . -name lwinput.aui` `find . -name lwmuxer.auf` `find . -name vslsmashsource.dll`; do
     found="$found $(readlink -f $file)"
   done
@@ -1763,7 +1775,9 @@ build_apps() {
 
 ## START MAIN
 ## set some parameters initial values
-cur_dir="$(pwd)/sandbox"
+xcomp_dir="xcomp"
+cur_dir="$(pwd)/xffmpeg"
+mingw_install_yn=0
 echo cur_dir = $cur_dir
 cpu_count="$(grep -c processor /proc/cpuinfo 2>/dev/null)" # linux cpu count
 if [ -z "$cpu_count" ]; then
@@ -1819,7 +1833,7 @@ while true; do
       --gcc-cpu-count=[number of cpu cores set it higher than 1 if you have multiple cores and > 1GB RAM, this speeds up initial cross compiler build. FFmpeg build uses number of cores no matter what] 
       --disable-nonfree=y (set to n to include nonfree like libfdk-aac) 
       --build-intel-qsv=y (set to y to include the [non windows xp compat.] qsv library and ffmpeg module. NB this not not hevc_qsv...
-      --sandbox-ok=n [skip sandbox prompt if y] 
+      --xffmpeg-ok=n [skip xffmpeg prompt if y] 
       -d [meaning \"defaults\" skip all prompts, just build ffmpeg static with some reasonable defaults like no git updates] 
       --build-libmxf=n [builds libMXF, libMXF++, writeavidmxfi.exe and writeaviddv50.exe from the BBC-Ingex project] 
       --build-mp4box=n [builds MP4Box.exe from the gpac project] 
@@ -1838,7 +1852,7 @@ while true; do
       --debug Make this script  print out each line as it executes
       --enable-gpl=[y] set to n to do an lgpl build
        "; exit 0 ;;
-    --sandbox-ok=* ) sandbox_ok="${1#*=}"; shift ;;
+    --xffmpeg-ok=* ) xffmpeg="${1#*=}"; shift ;;
     --gcc-cpu-count=* ) gcc_cpu_count="${1#*=}"; shift ;;
     --ffmpeg-git-checkout-version=* ) ffmpeg_git_checkout_version="${1#*=}"; shift ;;
     --build-libmxf=* ) build_libmxf="${1#*=}"; shift ;;
@@ -1856,8 +1870,8 @@ while true; do
     --disable-nonfree=* ) disable_nonfree="${1#*=}"; shift ;;
     # this doesn't actually "build all", like doesn't build 10 high-bit LGPL ffmpeg, but it does exercise the "non default" type build options...
     -a         ) compiler_flavors="multi"; build_mplayer=y; build_libmxf=y; build_mp4box=y; build_vlc=y; build_lsw=y; build_ffmpeg_shared=y; high_bitdepth=y; build_ffmpeg_static=y; build_lws=y;
-                 disable_nonfree=n; git_get_latest=y; sandbox_ok=y; build_intel_qsv=y; build_dvbtee=y; build_x264_with_libav=y; shift ;;
-    -d         ) gcc_cpu_count=$cpu_count; disable_nonfree="y"; sandbox_ok="y"; compiler_flavors="win32"; git_get_latest="n"; shift ;;
+                 disable_nonfree=n; git_get_latest=y; xffmpeg=y; build_intel_qsv=y; build_dvbtee=y; build_x264_with_libav=y; shift ;;
+    -d         ) gcc_cpu_count=$cpu_count; disable_nonfree="y"; xffmpeg="y"; compiler_flavors="win32"; git_get_latest="n"; shift ;;
     --compiler-flavors=* ) compiler_flavors="${1#*=}"; shift ;;
     --build-ffmpeg-static=* ) build_ffmpeg_static="${1#*=}"; shift ;;
     --build-ffmpeg-shared=* ) build_ffmpeg_shared="${1#*=}"; shift ;;
@@ -1895,8 +1909,13 @@ echo
 reset_cflags # also overrides any "native" CFLAGS, which we may need if there are some 'linux only' settings in there
 check_missing_packages # do this first since it's annoying to go through prompts then be rejected
 intro # remember to always run the intro, since it adjust pwd
-echo "cross compiler installed already"
-#install_cross_compiler 
+echo
+echo "********* run this shell script twice to overcome /theora library testing error/ *********" 
+echo
+mingw_install_ask
+if (( mingw_install_yn == 1 )); then
+  install_cross_compiler 
+fi
 compiler_flavors=win32
 echo compiler_flavors = $compiler_flavors
 echo
@@ -1926,9 +1945,9 @@ if [[ $compiler_flavors == "multi" || $compiler_flavors == "win32" ]]; then
   echo 
   echo "Starting 32-bit builds..."
   host_target='i686-w64-mingw32'
-  mingw_w64_x86_64_prefix="$cur_dir/cross_compilers/mingw-w64-i686/$host_target"
-  mingw_bin_path="$cur_dir/cross_compilers/mingw-w64-i686/bin"
-  export PKG_CONFIG_PATH="$cur_dir/cross_compilers/mingw-w64-i686/i686-w64-mingw32/lib/pkgconfig"
+  mingw_w64_x86_64_prefix="$cur_dir/$xcomp_dir/mingw-w64-i686/$host_target"
+  mingw_bin_path="$cur_dir/$xcomp_dir/mingw-w64-i686/bin"
+  export PKG_CONFIG_PATH="$cur_dir/$xcomp_dir/mingw-w64-i686/i686-w64-mingw32/lib/pkgconfig"
   export PATH="$mingw_bin_path:$original_path"
   echo 
   bits_target=32
@@ -1951,10 +1970,10 @@ if [[ $compiler_flavors == "multi" || $compiler_flavors == "win64" ]]; then
   echo
   echo "**************Starting 64-bit builds..." # make it have a bit easier to you can see when 32 bit is done 
   host_target='x86_64-w64-mingw32'
-  mingw_w64_x86_64_prefix="$cur_dir/cross_compilers/mingw-w64-x86_64/$host_target"
-  mingw_bin_path="$cur_dir/cross_compilers/mingw-w64-x86_64/bin"
+  mingw_w64_x86_64_prefix="$cur_dir/$xcomp_dir/mingw-w64-x86_64/$host_target"
+  mingw_bin_path="$cur_dir/$xcomp_dir/mingw-w64-x86_64/bin"
   export PATH="$mingw_bin_path:$original_path"
-  export PKG_CONFIG_PATH="$cur_dir/cross_compilers/mingw-w64-x86_64/x86_64-w64-mingw32/lib/pkgconfig"
+  export PKG_CONFIG_PATH="$cur_dir/$xcomp_dir/mingw-w64-x86_64/x86_64-w64-mingw32/lib/pkgconfig"
   bits_target=64
   cross_prefix="$mingw_bin_path/x86_64-w64-mingw32-"
   make_prefix_options="CC=${cross_prefix}gcc AR=${cross_prefix}ar PREFIX=$mingw_w64_x86_64_prefix RANLIB=${cross_prefix}ranlib LD=${cross_prefix}ld STRIP=${cross_prefix}strip CXX=${cross_prefix}g++"
