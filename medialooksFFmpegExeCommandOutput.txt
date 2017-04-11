@@ -1,0 +1,14 @@
+ffmpeg version N-81786-g2586668 Copyright (c) 2000-2016 the FFmpeg developers
+  built with gcc 4.9.3 (GCC)
+  configuration: --arch=x86 --target-os=mingw32 --cross-prefix=/home/main/ffmpeg-windows-build-helpers-latest/sandbox/cross_compilers/mingw-w64-i686/bin/i686-w64-mingw32- --pkg-config=pkg-config --disable-w32threads --enable-libsoxr --enable-fontconfig --enable-libass --enable-libbluray --enable-iconv --enable-libtwolame --extra-cflags=-DLIBTWOLAME_STATIC --enable-libzvbi --enable-libcaca --enable-libmodplug --extra-libs=-lstdc++ --extra-libs=-lpng --enable-decklink --extra-libs=-loleaut32 --enable-libmp3lame --enable-version3 --enable-zlib --enable-librtmp --enable-libvorbis --enable-libtheora --enable-libspeex --enable-libopenjpeg --enable-gnutls --enable-libgsm --enable-libfreetype --enable-libopus --enable-bzlib --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-libschroedinger --enable-libvpx --enable-libilbc --enable-libwavpack --enable-libwebp --enable-libgme --enable-dxva2 --enable-avisynth --enable-gray --enable-libopenh264 --enable-libebur128 --enable-netcdf --enable-libflite --enable-lzma --enable-libsnappy --enable-libzimg --enable-libmfx --extra-libs=-lpsapi --extra-libs=-lspeexdsp --extra-cflags='-mtune=core2' --extra-cflags=-O3 --enable-shared --disable-static --prefix=/home/main/ffmpeg-windows-build-helpers-latest/sandbox/win32/ffmpeg_git_lgpl_shared.installed --disable-libgme --enable-runtime-cpudetect
+  libavutil      55. 30.100 / 55. 30.100
+  libavcodec     57. 58.100 / 57. 58.100
+  libavformat    57. 51.100 / 57. 51.100
+  libavdevice    57.  0.102 / 57.  0.102
+  libavfilter     6. 63.100 /  6. 63.100
+  libswscale      4.  1.100 /  4.  1.100
+  libswresample   2.  2.100 /  2.  2.100
+Hyper fast Audio and Video encoder
+usage: ffmpeg [options] [[infile options] -i infile]... {[outfile options] outfile}...
+
+Use -h to get full help or, even better, run 'man ffmpeg'
