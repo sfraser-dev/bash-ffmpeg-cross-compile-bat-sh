@@ -921,12 +921,15 @@ build_libspeex() {
 }  
 
 build_libtheora() {
-  # when "making", fails on vp3huff test as it's a win32 exe; re-run, libtheora dir present so not "made"; libs exist
   cpu_count=1 # can't handle it
   download_and_unpack_file http://downloads.xiph.org/releases/theora/libtheora-1.2.0alpha1.tar.gz 
   cd libtheora-1.2.0alpha1
     sed -i.bak 's/double rint/double rint_disabled/' examples/encoder_example.c # double define issue [?]
-    generic_configure_make_install 
+    generic_configure
+    # when "making" wthout the below /sed/, fails on vp3huffdocumentation
+    # re-run the shell script, libtheora dir is present so not "made" again; non-document libs compiled fine
+    sed -i.bak 's/\.\/vp3huff /###\.\/vp3huff /g' doc/spec/Makefile   # comment out issue with running the vp3huff tex command
+    do_make_and_make_install
   cd ..
   cpu_count=$original_cpu_count
 }
