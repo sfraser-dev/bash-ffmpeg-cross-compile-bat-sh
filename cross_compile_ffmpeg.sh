@@ -927,9 +927,15 @@ build_libtheora() {
     sed -i.bak 's/double rint/double rint_disabled/' examples/encoder_example.c # double define issue [?]
     generic_configure
     # when "making", libtheora would fail on vp3huff document compilation (tex)
-    # solution 1: just re-run the shell script, libtheora dir is present so not "made" again (the codec libs compiled without error)
-    # solution 2: /sed/ comment out the vp3huff document compilation in its Makefile
-    sed -i.bak 's/\.\/vp3huff /###\.\/vp3huff /g' doc/spec/Makefile   # comment out issue with running the vp3huff tex documentation
+    if (( libtheora_solution_number == 2 )); then
+      # solution 2: just re-run the shell script, libtheora dir is present so not "made" again (the codec libs compiled without error)
+      echo
+      echo "re-run this script!"
+      echo
+    else
+      # solution 1: /sed/ comment out the vp3huff document compilation in its Makefile
+      sed -i.bak 's/\.\/vp3huff /###\.\/vp3huff /g' doc/spec/Makefile   # comment out issue with running the vp3huff tex documentation
+    fi
     do_make_and_make_install
   cd ..
   cpu_count=$original_cpu_count
@@ -1808,6 +1814,7 @@ else
 fi
 
 ## variables with their defaults
+libtheora_solution_number=1  # (1) sed the the offending libtheora Makefile or (2) run this script twice
 build_ffmpeg_static=y
 build_ffmpeg_shared=n
 enable_gpl=n
@@ -1914,9 +1921,11 @@ echo
 reset_cflags # also overrides any "native" CFLAGS, which we may need if there are some 'linux only' settings in there
 check_missing_packages # do this first since it's annoying to go through prompts then be rejected
 intro # remember to always run the intro, since it adjust pwd
-echo
-echo "********* run this shell script twice to overcome /theora library testing error/ *********" 
-echo
+if (( libtheora_solution_number == 2 )); then  # run script twice (1) or sed the the offending libtheora Makefile (2)
+  echo
+  echo "********* run this shell script twice to overcome /theora library documentation error/ *********" 
+  echo
+fi
 mingw_install_ask
 if (( mingw_install_yn == 1 )); then
   install_cross_compiler 
