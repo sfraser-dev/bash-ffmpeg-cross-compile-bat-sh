@@ -1527,7 +1527,8 @@ build_ffmpeg() {
       --disable-doc"
   # sf_options="$sf_options --disable-debug" # instead, set do_debug_build=n (below)
 
-  config_options="$init_options $sf_options \
+  #config_options="$init_options $sf_options \
+  config_options="$init_options \
       --enable-version3 \
       --enable-bzlib \
       --enable-fontconfig \
@@ -1591,7 +1592,6 @@ build_ffmpeg() {
 
   config_options="$config_options --enable-runtime-cpudetect" # not sure what this even does but this is the most compatible
 
-  do_debug_build=n # if you need one for backtraces/examining segfaults using gdb.exe ... change this to y :) XXXX make it affect x264 too...and make it param
   if [[ "$do_debug_build" = "y" ]]; then
     # not sure how many of these are actually needed/useful...possibly none LOL
     config_options="$config_options --disable-optimizations --extra-cflags=-Og --extra-cflags=-fno-omit-frame-pointer --enable-debug=3 --extra-cflags=-fno-inline $postpend_configure_opts"
@@ -1810,22 +1810,23 @@ fi
 ## variables with their defaults
 build_ffmpeg_static=y
 build_ffmpeg_shared=n
+enable_gpl=n
+disable_nonfree=y # have no value by default to force user selection
+git_get_latest=n
+prefer_stable=y
+do_debug_build=n # if you need one for backtraces/examining segfaults using gdb.exe ... change this to y :) XXXX make it affect x264 too...and make it param
+build_intel_qsv=y # intel / xp
 build_dvbtee=n
 build_libmxf=n
 build_mp4box=n
 build_mplayer=n
 build_vlc=n
 build_lsw=n
-git_get_latest=n
-prefer_stable=y
-build_intel_qsv=y # intel / xp
-disable_nonfree=y # have no value by default to force user selection
 #original_cflags='-mtune=core2 -O3' #  be careful, these override lots of stuff in makesfiles :|
 ## if you specify a march it needs to first so x264's configure will use it :|
 build_x264_with_libav=n
 ffmpeg_git_checkout_version=
 build_ismindex=n
-enable_gpl=n
 
 ## parse command line parameters, if any
 while true; do
