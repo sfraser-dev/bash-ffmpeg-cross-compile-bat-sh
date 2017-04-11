@@ -926,9 +926,10 @@ build_libtheora() {
   cd libtheora-1.2.0alpha1
     sed -i.bak 's/double rint/double rint_disabled/' examples/encoder_example.c # double define issue [?]
     generic_configure
-    # when "making" wthout the below /sed/, fails on vp3huffdocumentation
-    # re-run the shell script, libtheora dir is present so not "made" again; non-document libs compiled fine
-    sed -i.bak 's/\.\/vp3huff /###\.\/vp3huff /g' doc/spec/Makefile   # comment out issue with running the vp3huff tex command
+    # when "making", libtheora would fail on vp3huff document compilation (tex)
+    # solution 1: just re-run the shell script, libtheora dir is present so not "made" again (the codec libs compiled without error)
+    # solution 2: /sed/ comment out the vp3huff document compilation in its Makefile
+    sed -i.bak 's/\.\/vp3huff /###\.\/vp3huff /g' doc/spec/Makefile   # comment out issue with running the vp3huff tex documentation
     do_make_and_make_install
   cd ..
   cpu_count=$original_cpu_count
