@@ -1,0 +1,3 @@
+The compile command was:   ...   
+   
+The compiler was GCC 4.9.4 with MinGW-w64 4.0.4                                                                                                
