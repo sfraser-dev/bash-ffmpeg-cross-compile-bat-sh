@@ -3,6 +3,7 @@
 *.mpg
 sandbox/
 temp_dir/
+xffmpeg/
 medialooks/
 
 
