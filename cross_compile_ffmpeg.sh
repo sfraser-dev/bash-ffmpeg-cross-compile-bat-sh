@@ -1686,7 +1686,7 @@ build_dependencies() {
 #  build_libflite # not for now till after rubberband
   build_libgsm
 #  build_sdl 
-#  build_sdl2 # needed for ffplay to be created
+  build_sdl2 # needed for ffplay to be created
   build_libopus
   build_libopencore
   build_libogg
