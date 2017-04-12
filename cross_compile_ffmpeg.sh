@@ -89,20 +89,20 @@ intro() {
   cat <<EOL
      ##################### Welcome ######################
   Welcome to the ffmpeg cross-compile builder-helper script.
-  Downloads and builds will be installed to directories within $cur_dir
+  Downloads and builds will be installed to directories within $sandbox_full_pathname
   If this is not ok, then exit now, and cd to the directory where you'd
   like them installed, then run this script again from there.  
   NB that once you build your compilers, you can no longer rename/move
-  the ffmpeg directory, since it will have some hard coded paths in there.
+  the $sandbox_dir_name directory, since it will have some hard coded paths in there.
   You can, of course, rebuild ffmpeg from within it, etc.
 EOL
-  if [[ $sandbox_ok != 'y' && ! -d $sandbox_dir ]]; then
+  if [[ $sandbox_ok != 'y' && ! -d $sandbox_dir_name ]]; then
     echo
-    echo "Building in $PWD/$sandbox_dir, will use ~ 10GB space!"
+    echo "Building in $PWD/$sandbox_dir_name, will use ~ 10GB space!"
     echo
   fi
-  mkdir -p "$cur_dir"
-  cd "$cur_dir"
+  mkdir -p "$sandbox_full_pathname"
+  cd "$sandbox_full_pathname"
   if [[ $disable_nonfree = "y" ]]; then
     non_free="n"
   else
@@ -153,8 +153,8 @@ download_gcc_build_script() {
 }
 
 install_cross_compiler() {
-  local win32_gcc="$xcomp_dir/mingw-w64-i686/bin/i686-w64-mingw32-gcc"
-  local win64_gcc="$xcomp_dir/mingw-w64-x86_64/bin/x86_64-w64-mingw32-gcc"
+  local win32_gcc="$cross_compiler_dir_name/mingw-w64-i686/bin/i686-w64-mingw32-gcc"
+  local win64_gcc="$cross_compiler_dir_name/mingw-w64-x86_64/bin/x86_64-w64-mingw32-gcc"
   if [[ -f $win32_gcc && -f $win64_gcc ]]; then
    echo "MinGW-w64 compilers both already installed, not re-installing..."
    if [[ -z $compiler_flavors ]]; then
@@ -168,8 +168,8 @@ install_cross_compiler() {
     pick_compiler_flavors
   fi
 
-  mkdir -p $xcomp_dir
-  cd $xcomp_dir
+  mkdir -p $cross_compiler_dir_name
+  cd $cross_compiler_dir_name
 
     unset CFLAGS # don't want these "windows target" settings used the compiler itself since it creates executables to run on the local box (we have a parameter allowing them to set them for the script "all builds" basically)
     # pthreads version to avoid having to use cvs for it
@@ -186,7 +186,7 @@ install_cross_compiler() {
       download_gcc_build_script $zeranoe_script_name
       nice ./$zeranoe_script_name $zeranoe_script_options --build-type=win32 || exit 1
       if [[ ! -f ../$win32_gcc ]]; then
-        echo "failure building 32 bit gcc? recommend nuke $sandbox_dir (rm -rf $sandbox_dir) and start over..."
+        echo "failure building 32 bit gcc? recommend nuke $sandbox_dir_name (rm -rf $sandbox_dir_name) and start over..."
         exit 1
       fi
     fi
@@ -195,7 +195,7 @@ install_cross_compiler() {
       download_gcc_build_script $zeranoe_script_name
       nice ./$zeranoe_script_name $zeranoe_script_options --build-type=win64 || exit 1 
       if [[ ! -f ../$win64_gcc ]]; then
-        echo "failure building 64 bit gcc? recommend nuke $sandbox_dir (rm -rf $sandbox_dir) and start over..."
+        echo "failure building 64 bit gcc? recommend nuke $sandbox_dir_name (rm -rf $sandbox_dir_name) and start over..."
         exit 1
       fi
     fi
@@ -1418,7 +1418,7 @@ build_mp4box() { # like build_gpac
   sed -i.bak "s/has_dvb4linux=\"yes\"/has_dvb4linux=\"no\"/g" configure
   sed -i.bak "s/`uname -s`/MINGW32/g" configure
   # XXX do I want to disable more things here?
-  # ./$sandbox_dir/$xcomp_dir/mingw-w64-i686/bin/i686-w64-mingw32-sdl-config
+  # ./$sandbox_dir_name/$cross_compiler_dir_name/mingw-w64-i686/bin/i686-w64-mingw32-sdl-config
   generic_configure "--static-mp4box --enable-static-bin --disable-oss-audio --extra-ldflags=-municode --disable-x11 --sdl-cfg=${cross_prefix}sdl-config"
   # I seem unable to pass 3 libs into the same config line so do it with sed...
   sed -i.bak "s/EXTRALIBS=.*/EXTRALIBS=-lws2_32 -lwinmm -lz/g" config.mak
@@ -1515,15 +1515,15 @@ build_ffmpeg() {
   #config_options="$init_options --enable-libsoxr --enable-fontconfig --enable-libass --enable-libbluray --enable-iconv --enable-libtwolame --extra-cflags=-DLIBTWOLAME_STATIC --enable-libzvbi --enable-libcaca --enable-libmodplug --extra-libs=-lstdc++ --extra-libs=-lpng --enable-decklink --extra-libs=-loleaut32  --enable-libmp3lame --enable-version3 --enable-zlib --enable-librtmp --enable-libvorbis --enable-libtheora --enable-libspeex --enable-libopenjpeg --enable-gnutls  --enable-libgsm --enable-libfreetype --enable-libopus --enable-bzlib --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-libschroedinger --enable-libvpx --enable-libilbc --enable-libwavpack --enable-libwebp --enable-libgme --enable-dxva2 --enable-avisynth --enable-gray --enable-libopenh264 --enable-netcdf  --enable-libflite --enable-lzma --enable-libsnappy --enable-libzimg"
 
   # build quicker by compiling less
-  local sf_options="\
-      --disable-ffplay \
-      --disable-ffserver \
-      --disable-ffprobe \
-      --disable-doc"
-  # sf_options="$sf_options --disable-debug" # instead, set do_debug_build=n (below)
+  local sf_options=
+  #sf_options="$sf_options --disable-ffplay"
+  #sf_options="$sf_options --disable-ffprobe"
+  #sf_options="$sf_options --disable-ffserver"
+  sf_options="$sf_options --disable-doc" # --enable-doc installs FFmpeg documentation to /usr/local/share, requires sudo permission
+  #sf_options="$sf_options --disable-debug" # set do_debug_build=n (below) instead
 
   #config_options="$init_options $sf_options \
-  config_options="$init_options \
+  config_options="$init_options $sf_options \
       --enable-version3 \
       --enable-bzlib \
       --enable-fontconfig \
@@ -1775,10 +1775,13 @@ build_apps() {
 
 ## START MAIN
 ## set some parameters initial values
-sandbox_dir="ffmpeg"
-xcomp_dir="xcomp"
-cur_dir="$(pwd)/$sandbox_dir"
-echo cur_dir = $cur_dir
+sandbox_dir_name="ffmpeg"
+cross_compiler_dir_name="xcomp"
+sandbox_full_pathname="$(pwd)/$sandbox_dir_name"
+echo "sandbox_dir_name = $sandbox_dir_name"
+echo "cross_compiler_dir_name = $cross_compiler_dir_name"
+echo "sandbox_full_pathname = $sandbox_full_pathname"
+echo
 cpu_count="$(grep -c processor /proc/cpuinfo 2>/dev/null)" # linux cpu count
 if [ -z "$cpu_count" ]; then
   cpu_count=`sysctl -n hw.ncpu | tr -d '\n'` # OS X
@@ -1910,6 +1913,7 @@ echo
 
 reset_cflags # also overrides any "native" CFLAGS, which we may need if there are some 'linux only' settings in there
 check_missing_packages # do this first since it's annoying to go through prompts then be rejected
+echo "sandbox_ok = $sandbox_ok"
 intro # remember to always run the intro, since it adjust pwd
 if (( libtheora_solution_number == 2 )); then  # run script twice (1) or sed the the offending libtheora Makefile (2)
   echo
@@ -1950,9 +1954,9 @@ if [[ $compiler_flavors == "multi" || $compiler_flavors == "win32" ]]; then
   echo 
   echo "Starting 32-bit builds..."
   host_target='i686-w64-mingw32'
-  mingw_w64_x86_64_prefix="$cur_dir/$xcomp_dir/mingw-w64-i686/$host_target"
-  mingw_bin_path="$cur_dir/$xcomp_dir/mingw-w64-i686/bin"
-  export PKG_CONFIG_PATH="$cur_dir/$xcomp_dir/mingw-w64-i686/i686-w64-mingw32/lib/pkgconfig"
+  mingw_w64_x86_64_prefix="$sandbox_full_pathname/$cross_compiler_dir_name/mingw-w64-i686/$host_target"
+  mingw_bin_path="$sandbox_full_pathname/$cross_compiler_dir_name/mingw-w64-i686/bin"
+  export PKG_CONFIG_PATH="$sandbox_full_pathname/$cross_compiler_dir_name/mingw-w64-i686/i686-w64-mingw32/lib/pkgconfig"
   export PATH="$mingw_bin_path:$original_path"
   echo 
   bits_target=32
@@ -1975,10 +1979,10 @@ if [[ $compiler_flavors == "multi" || $compiler_flavors == "win64" ]]; then
   echo
   echo "**************Starting 64-bit builds..." # make it have a bit easier to you can see when 32 bit is done 
   host_target='x86_64-w64-mingw32'
-  mingw_w64_x86_64_prefix="$cur_dir/$xcomp_dir/mingw-w64-x86_64/$host_target"
-  mingw_bin_path="$cur_dir/$xcomp_dir/mingw-w64-x86_64/bin"
+  mingw_w64_x86_64_prefix="$sandbox_full_pathname/$cross_compiler_dir_name/mingw-w64-x86_64/$host_target"
+  mingw_bin_path="$sandbox_full_pathname/$cross_compiler_dir_name/mingw-w64-x86_64/bin"
   export PATH="$mingw_bin_path:$original_path"
-  export PKG_CONFIG_PATH="$cur_dir/$xcomp_dir/mingw-w64-x86_64/x86_64-w64-mingw32/lib/pkgconfig"
+  export PKG_CONFIG_PATH="$sandbox_full_pathname/$cross_compiler_dir_name/mingw-w64-x86_64/x86_64-w64-mingw32/lib/pkgconfig"
   bits_target=64
   cross_prefix="$mingw_bin_path/x86_64-w64-mingw32-"
   make_prefix_options="CC=${cross_prefix}gcc AR=${cross_prefix}ar PREFIX=$mingw_w64_x86_64_prefix RANLIB=${cross_prefix}ranlib LD=${cross_prefix}ld STRIP=${cross_prefix}strip CXX=${cross_prefix}g++"
