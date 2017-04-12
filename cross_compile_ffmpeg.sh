@@ -1519,7 +1519,9 @@ build_ffmpeg() {
   #sf_options="$sf_options --disable-ffplay"
   #sf_options="$sf_options --disable-ffprobe"
   #sf_options="$sf_options --disable-ffserver"
-  sf_options="$sf_options --disable-doc" # --enable-doc installs FFmpeg documentation to /usr/local/share, requires sudo permission
+    # --enable-doc installs FFmpeg documentation to /usr/local/share, requires sudo permission
+    # added "--prefix=$mingw_w64_x86_64_prefix" in build_ffmpeg()
+  #sf_options="$sf_options --disable-doc" 
   #sf_options="$sf_options --disable-debug" # set do_debug_build=n (below) instead
 
   #config_options="$init_options $sf_options \
@@ -1595,8 +1597,8 @@ build_ffmpeg() {
   fi
 
   config_options="$config_options $extra_postpend_configure_options"
-
-  do_configure "$config_options"
+  
+  do_configure "$config_options --prefix=$mingw_w64_x86_64_prefix" 
   rm -f */*.a */*.dll *.exe # just in case some dependency library has changed, force it to re-link even if the ffmpeg source hasn't changed...
   rm -f already_ran_make*
   echo "doing ffmpeg make $(pwd)"
