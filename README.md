@@ -3,7 +3,7 @@ https://github.com/rdp/ffmpeg-windows-build-helpers
 This is a shell script for cross compiling FFmpeg (building Windows .exe's on Debian Linux).  
    
       
-Example usage:
+Example usage:  
 mkdir /usr/media   
 (sudo chown user:user /usr/media)   
 cd /usr/media   
