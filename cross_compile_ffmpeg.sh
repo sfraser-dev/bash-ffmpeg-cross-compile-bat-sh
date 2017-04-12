@@ -92,12 +92,12 @@ intro() {
   If this is not ok, then exit now, and cd to the directory where you'd
   like them installed, then run this script again from there.  
   NB that once you build your compilers, you can no longer rename/move
-  the xffmpeg directory, since it will have some hard coded paths in there.
+  the ffmpeg directory, since it will have some hard coded paths in there.
   You can, of course, rebuild ffmpeg from within it, etc.
 EOL
-  if [[ $xffmpeg_ok != 'y' && ! -d xffmpeg ]]; then
+  if [[ $sandbox_ok != 'y' && ! -d $sandbox_dir ]]; then
     echo
-    echo "Building in $PWD/xffmpeg, will use ~ 10GB space!"
+    echo "Building in $PWD/$sandbox_dir, will use ~ 10GB space!"
     echo
   fi
   mkdir -p "$cur_dir"
@@ -197,7 +197,7 @@ install_cross_compiler() {
       download_gcc_build_script $zeranoe_script_name
       nice ./$zeranoe_script_name $zeranoe_script_options --build-type=win32 || exit 1
       if [[ ! -f ../$win32_gcc ]]; then
-        echo "failure building 32 bit gcc? recommend nuke xffmpeg (rm -rf xffmpeg) and start over..."
+        echo "failure building 32 bit gcc? recommend nuke $sandbox_dir (rm -rf $sandbox_dir) and start over..."
         exit 1
       fi
     fi
@@ -206,7 +206,7 @@ install_cross_compiler() {
       download_gcc_build_script $zeranoe_script_name
       nice ./$zeranoe_script_name $zeranoe_script_options --build-type=win64 || exit 1 
       if [[ ! -f ../$win64_gcc ]]; then
-        echo "failure building 64 bit gcc? recommend nuke xffmpeg (rm -rf xffmpeg) and start over..."
+        echo "failure building 64 bit gcc? recommend nuke $sandbox_dir (rm -rf $sandbox_dir) and start over..."
         exit 1
       fi
     fi
@@ -1429,7 +1429,7 @@ build_mp4box() { # like build_gpac
   sed -i.bak "s/has_dvb4linux=\"yes\"/has_dvb4linux=\"no\"/g" configure
   sed -i.bak "s/`uname -s`/MINGW32/g" configure
   # XXX do I want to disable more things here?
-  # ./xffmpeg/$xcomp_dir/mingw-w64-i686/bin/i686-w64-mingw32-sdl-config
+  # ./$sandbox_dir/$xcomp_dir/mingw-w64-i686/bin/i686-w64-mingw32-sdl-config
   generic_configure "--static-mp4box --enable-static-bin --disable-oss-audio --extra-ldflags=-municode --disable-x11 --sdl-cfg=${cross_prefix}sdl-config"
   # I seem unable to pass 3 libs into the same config line so do it with sed...
   sed -i.bak "s/EXTRALIBS=.*/EXTRALIBS=-lws2_32 -lwinmm -lz/g" config.mak
@@ -1575,18 +1575,18 @@ build_ffmpeg() {
   fi
   # other possibilities (you'd need to also uncomment the call to their build method): 
   #   --enable-w32threads # [worse UDP than pthreads, so not using that] 
-  if [[ $build_intel_qsv = y ]]; then
-    config_options="$config_options --enable-libmfx" # [note, not windows xp friendly]
-  fi
-  config_options="$config_options --enable-avresample" # guess this is some kind of libav specific thing (the FFmpeg fork) but L-Smash needs it so why not always build it :)
+###  if [[ $build_intel_qsv = y ]]; then
+###    config_options="$config_options --enable-libmfx" # [note, not windows xp friendly]
+###  fi
+###  config_options="$config_options --enable-avresample" # guess this is some kind of libav specific thing (the FFmpeg fork) but L-Smash needs it so why not always build it :)
   
-  config_options="$config_options --extra-libs=-lpsapi" # dlfcn [frei0r?] requires this, has no .pc file should put in frei0r.pc? ...
-  config_options="$config_options --extra-libs=-lspeexdsp" # libebur :|
-  for i in $CFLAGS; do
-    config_options="$config_options --extra-cflags=$i" # --extra-cflags may not be needed here, but adds it to the final console output which I like for debugging purposes
-  done
+###  config_options="$config_options --extra-libs=-lpsapi" # dlfcn [frei0r?] requires this, has no .pc file should put in frei0r.pc? ...
+###  config_options="$config_options --extra-libs=-lspeexdsp" # libebur :|
+###  for i in $CFLAGS; do
+###    config_options="$config_options --extra-cflags=$i" # --extra-cflags may not be needed here, but adds it to the final console output which I like for debugging purposes
+###  done
 
-  config_options="$config_options $postpend_configure_opts"
+###  config_options="$config_options $postpend_configure_opts"
 
   if [[ "$non_free" = "y" ]]; then
     config_options="$config_options --enable-nonfree --enable-libfdk-aac " 
@@ -1596,7 +1596,7 @@ build_ffmpeg() {
     #  apply_patch https://raw.githubusercontent.com/rdp/ffmpeg-windows-build-helpers/master/patches/nvresize2.patch "-p1" # uncomment if you want to test nvresize filter [et al] http://ffmpeg.org/pipermail/ffmpeg-devel/2015-November/182781.html patch worked with 7ab37cae34b3845
   fi
 
-  config_options="$config_options --enable-runtime-cpudetect" # not sure what this even does but this is the most compatible
+###  config_options="$config_options --enable-runtime-cpudetect" # not sure what this even does but this is the most compatible
 
   if [[ "$do_debug_build" = "y" ]]; then
     # not sure how many of these are actually needed/useful...possibly none LOL
@@ -1604,6 +1604,7 @@ build_ffmpeg() {
     # this one kills gdb workability for static build? ai ai [?] XXXX
     config_options="$config_options --disable-libgme"
   fi
+
   config_options="$config_options $extra_postpend_configure_options"
 
   do_configure "$config_options"
@@ -1652,7 +1653,7 @@ build_lsw() {
 
 find_all_build_exes() {
   local found=""
-# NB that we're currently in the xffmpeg dir...
+# NB that we're currently in the $ffmpeg dir...
   for file in `find . -name ffmpeg.exe` `find . -name ffmpeg_g.exe` `find . -name ffplay.exe` `find . -name MP4Box.exe` `find . -name mplayer.exe` `find . -name mencoder.exe` `find . -name avconv.exe` `find . -name avprobe.exe` `find . -name x264.exe` `find . -name writeavidmxf.exe` `find . -name writeaviddv50.exe` `find . -name rtmpdump.exe` `find . -name x265.exe` `find . -name ismindex.exe` `find . -name dvbtee.exe` `find . -name boxdumper.exe` `find . -name muxer.exe ` `find . -name remuxer.exe` `find . -name timelineeditor.exe` `find . -name lwcolor.auc` `find . -name lwdumper.auf` `find . -name lwinput.aui` `find . -name lwmuxer.auf` `find . -name vslsmashsource.dll`; do
     found="$found $(readlink -f $file)"
   done
@@ -1785,8 +1786,9 @@ build_apps() {
 
 ## START MAIN
 ## set some parameters initial values
+sandbox_dir="ffmpeg"
 xcomp_dir="xcomp"
-cur_dir="$(pwd)/xffmpeg"
+cur_dir="$(pwd)/$sandbox_dir"
 mingw_install_yn=0
 echo cur_dir = $cur_dir
 cpu_count="$(grep -c processor /proc/cpuinfo 2>/dev/null)" # linux cpu count
@@ -1845,7 +1847,7 @@ while true; do
       --gcc-cpu-count=[number of cpu cores set it higher than 1 if you have multiple cores and > 1GB RAM, this speeds up initial cross compiler build. FFmpeg build uses number of cores no matter what] 
       --disable-nonfree=y (set to n to include nonfree like libfdk-aac) 
       --build-intel-qsv=y (set to y to include the [non windows xp compat.] qsv library and ffmpeg module. NB this not not hevc_qsv...
-      --xffmpeg-ok=n [skip xffmpeg prompt if y] 
+      --sandbox-ok=n [skip sandbox prompt if y] 
       -d [meaning \"defaults\" skip all prompts, just build ffmpeg static with some reasonable defaults like no git updates] 
       --build-libmxf=n [builds libMXF, libMXF++, writeavidmxfi.exe and writeaviddv50.exe from the BBC-Ingex project] 
       --build-mp4box=n [builds MP4Box.exe from the gpac project] 
@@ -1864,7 +1866,7 @@ while true; do
       --debug Make this script  print out each line as it executes
       --enable-gpl=[y] set to n to do an lgpl build
        "; exit 0 ;;
-    --xffmpeg-ok=* ) xffmpeg="${1#*=}"; shift ;;
+    --sandbox-ok=* ) sandbox_ok="${1#*=}"; shift ;;
     --gcc-cpu-count=* ) gcc_cpu_count="${1#*=}"; shift ;;
     --ffmpeg-git-checkout-version=* ) ffmpeg_git_checkout_version="${1#*=}"; shift ;;
     --build-libmxf=* ) build_libmxf="${1#*=}"; shift ;;
@@ -1882,8 +1884,8 @@ while true; do
     --disable-nonfree=* ) disable_nonfree="${1#*=}"; shift ;;
     # this doesn't actually "build all", like doesn't build 10 high-bit LGPL ffmpeg, but it does exercise the "non default" type build options...
     -a         ) compiler_flavors="multi"; build_mplayer=y; build_libmxf=y; build_mp4box=y; build_vlc=y; build_lsw=y; build_ffmpeg_shared=y; high_bitdepth=y; build_ffmpeg_static=y; build_lws=y;
-                 disable_nonfree=n; git_get_latest=y; xffmpeg=y; build_intel_qsv=y; build_dvbtee=y; build_x264_with_libav=y; shift ;;
-    -d         ) gcc_cpu_count=$cpu_count; disable_nonfree="y"; xffmpeg="y"; compiler_flavors="win32"; git_get_latest="n"; shift ;;
+                 disable_nonfree=n; git_get_latest=y; sandbox_ok=y; build_intel_qsv=y; build_dvbtee=y; build_x264_with_libav=y; shift ;;
+    -d         ) gcc_cpu_count=$cpu_count; disable_nonfree="y"; sandbox_ok="y"; compiler_flavors="win32"; git_get_latest="n"; shift ;;
     --compiler-flavors=* ) compiler_flavors="${1#*=}"; shift ;;
     --build-ffmpeg-static=* ) build_ffmpeg_static="${1#*=}"; shift ;;
     --build-ffmpeg-shared=* ) build_ffmpeg_shared="${1#*=}"; shift ;;
