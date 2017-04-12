@@ -11,7 +11,8 @@ yes_no_sel () {
     echo -n "$question"
     read user_input
     if [[ -z "$user_input" ]]; then
-      echo "using default $default_answer"
+      echo "using default: $default_answer"
+      echo
       user_input=$default_answer
     fi
     if [[ "$user_input" != [YyNn] ]]; then
@@ -113,18 +114,6 @@ The resultant binary may not be distributable, but can be useful for in-house us
       non_free="$user_input" # save it away
     fi
   fi
-}
-
-mingw_install_ask() {
-  while true; do
-    echo
-    read -p "Do you wish to install the mingw cross-compiler [Yy/Nn]?" yn
-    case $yn in
-        [Yy]* ) mingw_install_yn=1; break;;
-        [Nn]* ) mingw_install_yn=0; break;;
-        * ) echo "Please answer yes or no.";;
-    esac
-  done
 }
 
 pick_compiler_flavors() {
@@ -1789,7 +1778,6 @@ build_apps() {
 sandbox_dir="ffmpeg"
 xcomp_dir="xcomp"
 cur_dir="$(pwd)/$sandbox_dir"
-mingw_install_yn=0
 echo cur_dir = $cur_dir
 cpu_count="$(grep -c processor /proc/cpuinfo 2>/dev/null)" # linux cpu count
 if [ -z "$cpu_count" ]; then
@@ -1928,8 +1916,9 @@ if (( libtheora_solution_number == 2 )); then  # run script twice (1) or sed the
   echo "********* run this shell script twice to overcome /theora library documentation error/ *********" 
   echo
 fi
-mingw_install_ask
-if (( mingw_install_yn == 1 )); then
+echo
+yes_no_sel "Do you wish to install the mingw cross-compiler [y/N]?" "n"
+if [[ $user_input == y ]]; then # input "Y"|"y" for yes, "N"|"n" for no, default answer is "n" 
   install_cross_compiler 
 fi
 compiler_flavors=win32
