@@ -1516,6 +1516,7 @@ build_ffmpeg() {
 
   # build quicker by compiling less
   local sf_options=
+  sf_options="$sf_options --enable-static --disable-shared"
   #sf_options="$sf_options --disable-ffplay"
   #sf_options="$sf_options --disable-ffprobe"
   #sf_options="$sf_options --disable-ffserver"
