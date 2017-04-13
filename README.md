@@ -1,8 +1,12 @@
 Adapting the shell script from:
 https://github.com/rdp/ffmpeg-windows-build-helpers   
-This is a shell script for cross compiling FFmpeg (building Windows .exe's on Debian Linux).  
-   
+This is a shell script for cross compiling FFmpeg (building Windows .exe's on Debian Linux).   
+
+
+On Debian (Jessie) 32 bit (Linux kernel is: 3.16.0-4-686-pae):   
+Created cross compiled ffmpeg.exes for Windows 32 bit and Windows 64 bit architectures
       
+    
 Example usage:  
 mkdir /usr/media   
 (sudo chown user:user /usr/media)   

@@ -1,9 +1,11 @@
 *.yuv
 *.mp4
 *.mpg
+*.txt
 sandbox/
 temp_dir/
 xffmpeg/
+ffmpeg/
 medialooks/
 
 
