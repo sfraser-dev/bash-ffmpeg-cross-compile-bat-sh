@@ -1,7 +1,7 @@
 *.yuv
 *.mp4
 *.mpg
-*.txt
+*.dat
 sandbox/
 temp_dir/
 xffmpeg/

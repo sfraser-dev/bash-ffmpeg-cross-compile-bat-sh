@@ -1926,16 +1926,17 @@ if (( libtheora_solution_number == 2 )); then  # run script twice (1) or sed the
   echo
 fi
 echo
+picked_compiler_flavors_file="picked_compiler_flavors.dat"
 yes_no_sel "Do you wish to install the mingw cross-compiler [y/N]?" "n"
 if [[ $user_input == y ]]; then # input "Y"|"y" for yes, "N"|"n" for no, default answer is "n" 
   # install the cross compiler and save its flavor {multi, win32, win64}
   install_cross_compiler 
-  echo "$compiler_flavors" > "$this_shell_script_full_pathname/picked_compiler_flavors.txt"
+  echo "$compiler_flavors" > "$this_shell_script_full_pathname/$picked_compiler_flavors_file"
 else
-  if [ -e "$this_shell_script_full_pathname/picked_compiler_flavors.txt" ]; then
-    compiler_flavors=$(<$this_shell_script_full_pathname/picked_compiler_flavors.txt)
+  if [ -e "$this_shell_script_full_pathname/$picked_compiler_flavors_file" ]; then
+    compiler_flavors=$(<$this_shell_script_full_pathname/$picked_compiler_flavors_file)
   else
-    echo "error: $this_shell_script_full_pathname/picked_compiler_flavors.txt does not exist ... exiting"
+    echo "error: $this_shell_script_full_pathname/$picked_compiler_flavors_file does not exist ... exiting"
     exit
   fi
 fi
