@@ -1777,9 +1777,11 @@ build_apps() {
 
 ## START MAIN
 ## set some parameters initial values
+this_shell_script_full_pathname=$(pwd)
 sandbox_dir_name="ffmpeg"
 cross_compiler_dir_name="xcomp"
 sandbox_full_pathname="$(pwd)/$sandbox_dir_name"
+echo "this_shell_script_full_pathname = $this_shell_script_full_pathname"
 echo "sandbox_dir_name = $sandbox_dir_name"
 echo "cross_compiler_dir_name = $cross_compiler_dir_name"
 echo "sandbox_full_pathname = $sandbox_full_pathname"
@@ -1916,6 +1918,7 @@ echo
 reset_cflags # also overrides any "native" CFLAGS, which we may need if there are some 'linux only' settings in there
 check_missing_packages # do this first since it's annoying to go through prompts then be rejected
 echo "sandbox_ok = $sandbox_ok"
+echo
 intro # remember to always run the intro, since it adjust pwd
 if (( libtheora_solution_number == 2 )); then  # run script twice (1) or sed the the offending libtheora Makefile (2)
   echo
@@ -1925,10 +1928,18 @@ fi
 echo
 yes_no_sel "Do you wish to install the mingw cross-compiler [y/N]?" "n"
 if [[ $user_input == y ]]; then # input "Y"|"y" for yes, "N"|"n" for no, default answer is "n" 
+  # install the cross compiler and save its flavor {multi, win32, win64}
   install_cross_compiler 
+  echo "$compiler_flavors" > "$this_shell_script_full_pathname/picked_compiler_flavors.txt"
+else
+  if [ -e "$this_shell_script_full_pathname/picked_compiler_flavors.txt" ]; then
+    compiler_flavors=$(<$this_shell_script_full_pathname/picked_compiler_flavors.txt)
+  else
+    echo "error: $this_shell_script_full_pathname/picked_compiler_flavors.txt does not exist ... exiting"
+    exit
+  fi
 fi
-compiler_flavors=win32
-echo compiler_flavors = $compiler_flavors
+echo compiler_flavors = $compiler_flavors  # user selection: 1=multi, 2=win32, 3=win64
 echo
 
 export PKG_CONFIG_LIBDIR= # disable pkg-config from finding [and using] normal linux system installed libs [yikes]
