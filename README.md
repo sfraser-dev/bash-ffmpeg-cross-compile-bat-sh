@@ -12,9 +12,10 @@ mkdir /usr/media
 (sudo chown user:user /usr/media)   
 cd /usr/media   
 git clone https://weebucket@bitbucket.org/weebucket/ffmpegcrosscompile.git .   
-source ./cross\_compile\_ffmpeg.sh (adapted shell script; different, more concise, directory structure)   
+source ./run\_ffmpeg\_cross\_compiler.sh (runs the adapted ./cross\_compile\_ffmpeg.sh shell script)   
 ... results in ->   
---xffmpeg/win32 (source code for ffmpeg and external libraries)   
---xffmpeg/xcomp (cross-compiler (libs, libs/pkgconfig, includes, exes))   
+--ffmpeg/win32 (32 bit source code and build directories for ffmpeg and external libraries)   
+--ffmpeg/x86\_64 (64 bit source code and build directories for ffmpeg and external libraries)   
+--ffmpeg/xcomp (cross-compiler (libs, libs/pkgconfig, includes, exes))   
 
 
