@@ -1515,9 +1515,8 @@ build_ffmpeg() {
   #config_options="$init_options --enable-libsoxr --enable-fontconfig --enable-libass --enable-libbluray --enable-iconv --enable-libtwolame --extra-cflags=-DLIBTWOLAME_STATIC --enable-libzvbi --enable-libcaca --enable-libmodplug --extra-libs=-lstdc++ --extra-libs=-lpng --enable-decklink --extra-libs=-loleaut32  --enable-libmp3lame --enable-version3 --enable-zlib --enable-librtmp --enable-libvorbis --enable-libtheora --enable-libspeex --enable-libopenjpeg --enable-gnutls  --enable-libgsm --enable-libfreetype --enable-libopus --enable-bzlib --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-libschroedinger --enable-libvpx --enable-libilbc --enable-libwavpack --enable-libwebp --enable-libgme --enable-dxva2 --enable-avisynth --enable-gray --enable-libopenh264 --enable-netcdf  --enable-libflite --enable-lzma --enable-libsnappy --enable-libzimg"
 
   # build quicker by compiling less
-  local sf_options=
-    # NO!!! sf_options="$sf_options --enable-static"   # {enable-disable}-static,  set build_ffmpeg_static=y/n (below) instead
-    # NO!!! sf_options="$sf_options --disable-shared"  # {enable-disable}-shared,  set build_ffmpeg_shared=y/n (below) instead
+  # HUH! sf_options="$sf_options --enable-static"   # {enable-disable}-static,  set build_ffmpeg_static=y/n (below) instead
+  # HUH! sf_options="$sf_options --disable-shared"  # {enable-disable}-shared,  set build_ffmpeg_shared=y/n (below) instead
     # NO!!! sf_options="$sf_options --disable-debug"   # {enable-disable}-debug,   set do_debug_build=y/n (below) instead
   #sf_options="$sf_options --disable-ffplay"
   #sf_options="$sf_options --disable-ffprobe"
@@ -1894,6 +1893,7 @@ done
 # variables to set
 libtheora_solution_number=1  # (1) sed the the offending libtheora Makefile or (2) run this script twice
 do_debug_build=n # if you need one for backtraces/examining segfaults using gdb.exe ... change this to y :) XXXX make it affect x264 too...and make it param
+sf_options=
 
 echo
 echo libtheora_solution_number = $libtheora_solution_number
@@ -1917,6 +1917,18 @@ echo build_x264_with_libav = $build_x264_with_libav
 echo ffmpeg_git_checkout_version = $ffmpeg_git_checkout_version
 echo build_ismindex = $build_ismindex
 echo
+
+# force --{enable,disable}-static / --{enable,disable}-shared switches
+if [[ build_ffmpeg_static == y ]]; then
+    sf_options="$sf_options --enable-static"
+else
+    sf_options="$sf_options --disable-static"
+fi
+if [[ build_ffmpeg_shared == y ]]; then
+    sf_options="$sf_options --enable-shared"
+else
+    sf_options="$sf_options --disable-shared"
+fi
 
 reset_cflags # also overrides any "native" CFLAGS, which we may need if there are some 'linux only' settings in there
 check_missing_packages # do this first since it's annoying to go through prompts then be rejected
