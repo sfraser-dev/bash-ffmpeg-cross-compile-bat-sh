@@ -1919,16 +1919,18 @@ echo build_ismindex = $build_ismindex
 echo
 
 # force --{enable,disable}-static / --{enable,disable}-shared switches
-if [[ build_ffmpeg_static == y ]]; then
+if [[ $build_ffmpeg_static == y ]]; then
     sf_options="$sf_options --enable-static"
 else
     sf_options="$sf_options --disable-static"
 fi
-if [[ build_ffmpeg_shared == y ]]; then
+if [[ $build_ffmpeg_shared == y ]]; then
     sf_options="$sf_options --enable-shared"
 else
     sf_options="$sf_options --disable-shared"
 fi
+echo sf_options = $sf_options
+echo
 
 reset_cflags # also overrides any "native" CFLAGS, which we may need if there are some 'linux only' settings in there
 check_missing_packages # do this first since it's annoying to go through prompts then be rejected
