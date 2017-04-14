@@ -1775,32 +1775,10 @@ build_apps() {
 }
 
 ## START MAIN
-## variables with their defaults
-libtheora_solution_number=1  # (1) sed the the offending libtheora Makefile or (2) run this script twice
-build_ffmpeg_static=y   # --enable-static?
-build_ffmpeg_shared=n   # --enable-shared?
-enable_gpl=n
-disable_nonfree=y # have no value by default to force user selection
-git_get_latest=n
-prefer_stable=y
-do_debug_build=n # if you need one for backtraces/examining segfaults using gdb.exe ... change this to y :) XXXX make it affect x264 too...and make it param
-build_intel_qsv=y # intel / xp
-build_dvbtee=n
-build_libmxf=n
-build_mp4box=n
-build_mplayer=n
-build_vlc=n
-build_lsw=n
-#original_cflags='-mtune=core2 -O3' #  be careful, these override lots of stuff in makesfiles :|
-## if you specify a march it needs to first so x264's configure will use it :|
-build_x264_with_libav=n
-ffmpeg_git_checkout_version=
-build_ismindex=n
-
-## set some parameters initial values
+## set some paths and directory names
 this_shell_script_full_pathname=$(pwd)
 sandbox_dir_name="ffmpeg"
-cross_compiler_dir_name="xcomp"
+cross_compiler_dir_name="xc"
 sandbox_full_pathname="$(pwd)/$sandbox_dir_name"
 echo "this_shell_script_full_pathname = $this_shell_script_full_pathname"
 echo "sandbox_dir_name = $sandbox_dir_name"
@@ -1893,25 +1871,49 @@ while true; do
   esac
 done
 
+## set some variables 
+libtheora_solution_number=1  # (1) sed the the offending libtheora Makefile or (2) run this script twice
+build_ffmpeg_static=n   # --enable-static?
+build_ffmpeg_shared=y   # --enable-shared?
+enable_gpl=n
+disable_nonfree=y # have no value by default to force user selection
+git_get_latest=n
+prefer_stable=y
+do_debug_build=n # if you need one for backtraces/examining segfaults using gdb.exe ... change this to y :) XXXX make it affect x264 too...and make it param
+build_intel_qsv=y # intel / xp
+build_dvbtee=n
+build_libmxf=n
+build_mp4box=n
+build_mplayer=n
+build_vlc=n
+build_lsw=n
+#original_cflags='-mtune=core2 -O3' #  be careful, these override lots of stuff in makesfiles :|
+## if you specify a march it needs to first so x264's configure will use it :|
+build_x264_with_libav=n
+ffmpeg_git_checkout_version=
+build_ismindex=n
+
 echo
+echo libtheora_solution_number = $libtheora_solution_number
 echo build_ffmpeg_static = $build_ffmpeg_static
 echo build_ffmpeg_shared = $build_ffmpeg_shared
+echo enable_gpl = $enable_gpl
+echo disable_nonfree = $disable_nonfree # have no value by default to force user selection
+echo git_get_latest = $git_get_latest
+echo prefer_stable = $prefer_stable
+echo do_debug_build = $do_debug_build
+echo build_intel_qsv = $build_intel_qsv
 echo build_dvbtee = $build_dvbtee
 echo build_libmxf = $build_libmxf
 echo build_mp4box = $build_mp4box
 echo build_mplayer = $build_mplayer
 echo build_vlc = $build_vlc
 echo build_lsw = $build_lsw
-echo git_get_latest = $git_get_latest
-echo prefer_stable = $prefer_stable
-echo build_intel_qsv = $build_intel_qsv
-echo disable_nonfree = $disable_nonfree # have no value by default to force user selection
 echo original_cflags = $original_cflags #  be careful, these override lots of stuff in makesfiles :|
 ## if you specify a march it needs to first so x264's configure will use it :|
 echo build_x264_with_libav = $build_x264_with_libav
 echo ffmpeg_git_checkout_version = $ffmpeg_git_checkout_version
 echo build_ismindex = $build_ismindex
-echo enable_gpl = $enable_gpl
 echo
 
 reset_cflags # also overrides any "native" CFLAGS, which we may need if there are some 'linux only' settings in there
