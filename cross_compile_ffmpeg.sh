@@ -1516,16 +1516,14 @@ build_ffmpeg() {
 
   # build quicker by compiling less
   local sf_options=
-  sf_options="$sf_options --enable-static --disable-shared"
+    # NO!!! sf_options="$sf_options --enable-static"   # {enable-disable}-static,  set build_ffmpeg_static=y/n (below) instead
+    # NO!!! sf_options="$sf_options --disable-shared"  # {enable-disable}-shared,  set build_ffmpeg_shared=y/n (below) instead
+    # NO!!! sf_options="$sf_options --disable-debug"   # {enable-disable}-debug,   set do_debug_build=y/n (below) instead
   #sf_options="$sf_options --disable-ffplay"
   #sf_options="$sf_options --disable-ffprobe"
   #sf_options="$sf_options --disable-ffserver"
-    # --enable-doc installs FFmpeg documentation to /usr/local/share, requires sudo permission
-    # added "--prefix=$mingw_w64_x86_64_prefix" in build_ffmpeg()
   #sf_options="$sf_options --disable-doc" 
-  #sf_options="$sf_options --disable-debug" # set do_debug_build=n (below) instead
 
-  #config_options="$init_options $sf_options \
   config_options="$init_options $sf_options \
       --enable-version3 \
       --enable-bzlib \
@@ -1777,6 +1775,28 @@ build_apps() {
 }
 
 ## START MAIN
+## variables with their defaults
+libtheora_solution_number=1  # (1) sed the the offending libtheora Makefile or (2) run this script twice
+build_ffmpeg_static=y   # --enable-static?
+build_ffmpeg_shared=n   # --enable-shared?
+enable_gpl=n
+disable_nonfree=y # have no value by default to force user selection
+git_get_latest=n
+prefer_stable=y
+do_debug_build=n # if you need one for backtraces/examining segfaults using gdb.exe ... change this to y :) XXXX make it affect x264 too...and make it param
+build_intel_qsv=y # intel / xp
+build_dvbtee=n
+build_libmxf=n
+build_mp4box=n
+build_mplayer=n
+build_vlc=n
+build_lsw=n
+#original_cflags='-mtune=core2 -O3' #  be careful, these override lots of stuff in makesfiles :|
+## if you specify a march it needs to first so x264's configure will use it :|
+build_x264_with_libav=n
+ffmpeg_git_checkout_version=
+build_ismindex=n
+
 ## set some parameters initial values
 this_shell_script_full_pathname=$(pwd)
 sandbox_dir_name="ffmpeg"
@@ -1810,28 +1830,6 @@ else
   echo "low RAM detected so using only one cpu for gcc compilation"
   gcc_cpu_count=1 # compatible low RAM...
 fi
-
-## variables with their defaults
-libtheora_solution_number=1  # (1) sed the the offending libtheora Makefile or (2) run this script twice
-build_ffmpeg_static=y
-build_ffmpeg_shared=n
-enable_gpl=n
-disable_nonfree=y # have no value by default to force user selection
-git_get_latest=n
-prefer_stable=y
-do_debug_build=n # if you need one for backtraces/examining segfaults using gdb.exe ... change this to y :) XXXX make it affect x264 too...and make it param
-build_intel_qsv=y # intel / xp
-build_dvbtee=n
-build_libmxf=n
-build_mp4box=n
-build_mplayer=n
-build_vlc=n
-build_lsw=n
-#original_cflags='-mtune=core2 -O3' #  be careful, these override lots of stuff in makesfiles :|
-## if you specify a march it needs to first so x264's configure will use it :|
-build_x264_with_libav=n
-ffmpeg_git_checkout_version=
-build_ismindex=n
 
 ## parse command line parameters, if any
 while true; do
