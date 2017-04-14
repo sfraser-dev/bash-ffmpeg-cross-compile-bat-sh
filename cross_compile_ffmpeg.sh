@@ -1871,27 +1871,29 @@ while true; do
   esac
 done
 
-## set some variables 
-libtheora_solution_number=1  # (1) sed the the offending libtheora Makefile or (2) run this script twice
-build_ffmpeg_static=n   # --enable-static?
-build_ffmpeg_shared=y   # --enable-shared?
-enable_gpl=n
-disable_nonfree=y # have no value by default to force user selection
-git_get_latest=n
-prefer_stable=y
-do_debug_build=n # if you need one for backtraces/examining segfaults using gdb.exe ... change this to y :) XXXX make it affect x264 too...and make it param
-build_intel_qsv=y # intel / xp
-build_dvbtee=n
-build_libmxf=n
-build_mp4box=n
-build_mplayer=n
-build_vlc=n
-build_lsw=n
+## these variables are now set via the command line 
+#build_ffmpeg_static=n   # --enable-static?
+#build_ffmpeg_shared=y   # --enable-shared?
+#enable_gpl=n
+#disable_nonfree=y # have no value by default to force user selection
+#git_get_latest=n
+#prefer_stable=y
+#build_intel_qsv=y # intel / xp
+#build_dvbtee=n
+#build_libmxf=n
+#build_mp4box=n
+#build_mplayer=n
+#build_vlc=n
+#build_lsw=n
 #original_cflags='-mtune=core2 -O3' #  be careful, these override lots of stuff in makesfiles :|
 ## if you specify a march it needs to first so x264's configure will use it :|
-build_x264_with_libav=n
-ffmpeg_git_checkout_version=
-build_ismindex=n
+#build_x264_with_libav=n
+#ffmpeg_git_checkout_version=
+#build_ismindex=n
+
+# variables to set
+libtheora_solution_number=1  # (1) sed the the offending libtheora Makefile or (2) run this script twice
+do_debug_build=n # if you need one for backtraces/examining segfaults using gdb.exe ... change this to y :) XXXX make it affect x264 too...and make it param
 
 echo
 echo libtheora_solution_number = $libtheora_solution_number
