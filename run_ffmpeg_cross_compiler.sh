@@ -60,8 +60,8 @@ fi
 source ./$FILE2RUN --build-ffmpeg-static=$STATIC --build-ffmpeg-shared=$SHARED --enable-gpl=n --disable-nonfree=y --git-get-latest=n --prefer-stable=y --build-intel-qsv=y --build-dvbtee=n --build-mp4box=n --build-mplayer=n --build-vlc=n --build-lsw=n --build-x264-with-libav=n --ffmpeg-git-checkout-version= --build-ismindex=n --sandboxdir=$SANDBOX --xcompdir=$XCOMP 2>&1 | tee $DATFILE
 
 # get resultant bin files
-now=$(date +"%y%m%d-%H%M_%S")
-BIN_DIR_NAME="$PWD/bin_files_dll/$now"
+NOW=$(date +"%y%m%d-%H%M%S")
+BIN_DIR_NAME="$PWD/bin_files/$NOW_$SANDBOX_$XCOMP_$LIBTYPE_$FILE2RUN"
 if [ ! -d "$BIN_DIR_NAME" ]; then
   mkdir -p "$BIN_DIR_NAME"
 else
