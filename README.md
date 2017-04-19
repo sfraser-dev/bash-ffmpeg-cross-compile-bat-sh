@@ -4,7 +4,7 @@ This is a shell script for cross compiling FFmpeg (building Windows .exe's on De
 
 
 On Debian (Jessie) 32 bit (Linux kernel is: 3.16.0-4-686-pae):   
-Created cross compiled ffmpeg.exes for Windows 32 bit and Windows 64 bit architectures
+Created cross compiled ffmpeg.exes for Windows 32 bit and Windows 64 bit architectures   
       
     
 Example usage:  
@@ -12,10 +12,18 @@ mkdir /usr/media
 (sudo chown user:user /usr/media)   
 cd /usr/media   
 git clone https://weebucket@bitbucket.org/weebucket/ffmpegcrosscompile.git .   
-source ./run\_ffmpeg\_cross\_compiler.sh (wrapper for the adapted ./cross\_compile\_ffmpeg.sh shell script)   
+    
+Run the wrapper script for the ffmpeg-windows-build-help script, for example:   
+   
+-- build a shared FFmpeg DLL using the script "crossCompileFfmpegMinimal.sh"  
+-- (sandbox dir hardcoded to "ffmpeg" and the cross-compiler directory hard-coded to "xc")   
+run\_ffmpeg\_cross\_compiler --sandbox="ffmpeg" --xcomp="xc" --lib="dll" --file="crossCompileFfmpegMinimal.sh"   
 ... results in ->   
---ffmpeg/win32 (32 bit source code and build directories for ffmpeg and external libraries)   
---ffmpeg/x86\_64 (64 bit source code and build directories for ffmpeg and external libraries)   
---ffmpeg/xcomp (cross-compiler (libs, libs/pkgconfig, includes, exes))   
-
+bin\_files\timestamp\_dll\_crossCompileFfmpegMinimal   
+   
+-- build a static FFmpeg using the script "crossCompileFfmpegMedialooks.sh"   
+-- (sandbox dir hardcoded to "ffmpeg" and the cross-compiler directory hard-coded to "xc")   
+run\_ffmpeg\_cross\_compiler --sandbox="ffmpeg" --xcomp="xc" --lib="static" --file="crossCompileFfmpegMedialooks.sh"    
+... results in ->   
+bin\_files\timestamp\_dll\_crossCompileFfmpegMinimal   
 
