@@ -1,6 +1,16 @@
 #!/bin/bash
-# usage: 
-# ./runme --file="cross_compile_ffmpeg_minimal.sh" --sandbox="ffmpeg" --xcomp="xc" --lib="dll or static"
+#
+# wrapper for the fmpeg-windows-build-helper script; bin files copied to a timestamped dir within ./bin_files
+# 
+# Examples:
+#
+# build a shared FFmpeg DLL using the script "cross_compile_ffmpeg_minimal.sh" 
+# (sandbox dir hardcoded to "ffmpeg" and the cross-compiler directory hard-coded to "xc")
+# ./run_ffmpeg_cross_compiler --file="cross_compile_ffmpeg_minimal.sh" --sandbox="ffmpeg" --xcomp="xc" --lib="dll"
+#
+# build a static FFmpeg using the script "cross_compile_ffmpeg_medialooks.sh" 
+# (sandbox dir hardcoded to "ffmpeg" and the cross-compiler directory hard-coded to "xc")
+# ./run_ffmpeg_cross_compiler --file="cross_compile_ffmpeg_medialooks.sh" --sandbox="ffmpeg" --xcomp="xc" --lib="static"
 
 PWD=$(pwd)
 
@@ -48,7 +58,7 @@ else
   exit 1
 fi
 
-# deconstruct the name of the ffmpeg-windows-build-helper file 
+# deconstruct the name of the ffmpeg-windows-build-helper script
 FILE2RUN_EXTN="${FILE2RUN##*.}"
 FILE2RUN_BASE="${FILE2RUN%.*}"
 echo "FILE2RUN_EXTN = $FILE2RUN_EXTN"
