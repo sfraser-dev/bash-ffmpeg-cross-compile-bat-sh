@@ -7,7 +7,7 @@ temp_dir/
 xffmpeg/
 ffmpeg/
 medialooks/
-
+bin_files/
 
 # Vim files
 *~

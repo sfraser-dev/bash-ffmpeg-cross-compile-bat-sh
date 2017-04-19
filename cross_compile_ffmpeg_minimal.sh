@@ -1782,15 +1782,6 @@ build_apps() {
 
 ## START MAIN
 ## set some paths and directory names
-this_shell_script_full_pathname=$(pwd)
-sandbox_dir_name="ffmpeg"
-cross_compiler_dir_name="xc"
-sandbox_full_pathname="$(pwd)/$sandbox_dir_name"
-echo "this_shell_script_full_pathname = $this_shell_script_full_pathname"
-echo "sandbox_dir_name = $sandbox_dir_name"
-echo "cross_compiler_dir_name = $cross_compiler_dir_name"
-echo "sandbox_full_pathname = $sandbox_full_pathname"
-echo
 cpu_count="$(grep -c processor /proc/cpuinfo 2>/dev/null)" # linux cpu count
 if [ -z "$cpu_count" ]; then
   cpu_count=`sysctl -n hw.ncpu | tr -d '\n'` # OS X
@@ -1870,12 +1861,32 @@ while true; do
     --prefer-stable=* ) prefer_stable="${1#*=}"; shift ;;
     --enable-gpl=* ) enable_gpl="${1#*=}"; shift ;;
     --high-bitdepth=* ) high_bitdepth="${1#*=}"; shift ;;
+    --sandboxdir=* ) sandbox_dir_name="${1#*=}"; shift ;;
+    --xcompdir=* ) cross_compiler_dir_name="${1#*=}"; shift ;;
     --debug ) set -x; shift ;;
     -- ) shift; break ;;
     -* ) echo "Error, unknown option: '$1'."; exit 1 ;;
     * ) break ;;
   esac
 done
+
+this_shell_script_full_pathname=$(pwd)
+if [[ -z $sandbox_dir_name ]]; then
+  echo "error, --sandboxdir command line option not set"
+  exit 1
+fi
+if [[ -z $cross_compiler_dir_name ]]; then
+  echo "error, --xcompdir command line option not set"
+  exit 1
+fi
+#sandbox_dir_name="ffmpeg"
+#cross_compiler_dir_name="xc"
+sandbox_full_pathname="$(pwd)/$sandbox_dir_name"
+echo "this_shell_script_full_pathname = $this_shell_script_full_pathname"
+echo "sandbox_dir_name = $sandbox_dir_name"
+echo "cross_compiler_dir_name = $cross_compiler_dir_name"
+echo "sandbox_full_pathname = $sandbox_full_pathname"
+echo
 
 ## these variables are now set via the command line 
 #build_ffmpeg_static=n   # --enable-static?
@@ -1961,7 +1972,7 @@ else
     compiler_flavors=$(<$this_shell_script_full_pathname/$current_compiler_flavor_file)
   else
     echo "error: $this_shell_script_full_pathname/$current_compiler_flavor_file does not exist ..."
-    echo "error: $this_shell_script_full_pathname/$current_compiler_flavor_file should contain {multi,win32,win64} ... exiting"
+    echo "... $this_shell_script_full_pathname/$current_compiler_flavor_file should contain {multi,win32,win64} ... exiting"
     exit
   fi
 fi
