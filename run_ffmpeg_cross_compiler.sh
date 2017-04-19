@@ -30,7 +30,7 @@ do
   esac
 done
 if [ -z $FILE2RUN] || [ -z $SANDBOX ] || [ -z $XCOMP ] || [ -z $LIBTYPE ] ; then
-    echo "error, must set directory names for file2run (--file=""), sandbox (--sandbox=""), cross-compiler (--xcomp="") and library type (--libtype="") ... exiting"
+    echo "error, must set directory names for file2run (--file=\"\"), sandbox (--sandbox=\"\"), cross-compiler (--xcomp=\"\") and library type (--libtype=\"\") ... exiting"
   exit 1
 fi
 
@@ -52,7 +52,7 @@ elif [ $LIBTYPE == "static" ] ; then
   SHARED="n"
   DATFILE="outputStatic.dat"
 else
-  echo "error, --lib must equal dll or static ... exiting"
+  echo "error, --libtype must equal dll or static ... exiting"
   exit 1
 fi
 
