@@ -6,11 +6,11 @@
 #
 # build a shared FFmpeg DLL using the script "cross_compile_ffmpeg_minimal.sh" 
 # (sandbox dir hardcoded to "ffmpeg" and the cross-compiler directory hard-coded to "xc")
-# ./run_ffmpeg_cross_compiler --file="cross_compile_ffmpeg_minimal.sh" --sandbox="ffmpeg" --xcomp="xc" --lib="dll"
+# ./run_ffmpeg_cross_compiler --file="cross_compile_ffmpeg_minimal.sh" --sandbox="ffmpeg" --xcomp="xc" --libtype="dll"
 #
 # build a static FFmpeg using the script "cross_compile_ffmpeg_medialooks.sh" 
 # (sandbox dir hardcoded to "ffmpeg" and the cross-compiler directory hard-coded to "xc")
-# ./run_ffmpeg_cross_compiler --file="cross_compile_ffmpeg_medialooks.sh" --sandbox="ffmpeg" --xcomp="xc" --lib="static"
+# ./run_ffmpeg_cross_compiler --file="cross_compile_ffmpeg_medialooks.sh" --sandbox="ffmpeg" --xcomp="xc" --libtype="static"
 
 PWD=$(pwd)
 
