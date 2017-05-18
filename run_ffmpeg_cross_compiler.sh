@@ -70,6 +70,8 @@ if [ ! -e $FILE2RUN ] ; then
   exit 1
 fi
 
+# FFmpeg versions: http://git.videolan.org/?p=ffmpeg.git
+# git tag -l  # to see the branches / releases
 # cross compile 
 source ./$FILE2RUN --build-ffmpeg-static=$STATIC --build-ffmpeg-shared=$SHARED --enable-gpl=n --disable-nonfree=y --git-get-latest=n --prefer-stable=y --build-intel-qsv=y --build-dvbtee=n --build-mp4box=n --build-mplayer=n --build-vlc=n --build-lsw=n --build-x264-with-libav=n --ffmpeg-git-checkout-version= --build-ismindex=n --sandboxdir=$SANDBOX --xcompdir=$XCOMP 2>&1 | tee $DATFILE
 

@@ -1554,11 +1554,69 @@ build_ffmpeg() {
 #      --enable-libwavpack \
 #      --enable-zlib"
 
+# working minimalist config
+#config_options="$init_options $sf_options \
+#    --extra-libs=-lpng \
+#    --enable-libopenjpeg \
+#    --enable-bzlib \
+#    --enable-avresample \
+#    "
+
+# trying to use medialooks DLLs
 config_options="$init_options $sf_options \
-    --enable-bzlib \
-    --enable-libopenjpeg \
+    --enable-libsoxr \
+    --enable-fontconfig \
+    --enable-libass \
+    --enable-libbluray \
+    --enable-iconv \
+    --enable-libtwolame --extra-cflags=-DLIBTWOLAME_STATIC \
+    --enable-libzvbi \
+    --enable-libcaca \
+    --enable-libmodplug \
+    --extra-libs=-lstdc++ \
     --extra-libs=-lpng \
-    --enable-avresample"
+    --enable-decklink \
+    --extra-libs=-loleaut32 \
+    --enable-libmp3lame \
+    --enable-version3 \
+    --enable-zlib \
+    --enable-librtmp \
+    --enable-libvorbis \
+    --enable-libtheora \
+    --enable-libspeex \
+    --enable-libopenjpeg \
+    --enable-gnutls \
+    --enable-libgsm \
+    --enable-libfreetype \
+    --enable-libopus \
+    --enable-bzlib \
+    --enable-libopencore-amrnb \
+    --enable-libopencore-amrwb \
+    --enable-libvo-amrwbenc \
+    --enable-libschroedinger \
+    --enable-libvpx \
+    --enable-libilbc \
+    --enable-libwavpack \
+    --enable-libwebp \
+    --enable-libgme \
+    --enable-dxva2 \
+    --enable-avisynth \
+    --enable-gray \
+    --enable-libopenh264 \
+    --enable-libebur128 \
+    --enable-netcdf \
+    --enable-libflite \
+    --enable-lzma \
+    --enable-libsnappy \
+    --enable-libzimg \
+    --enable-libmfx \
+    --extra-libs=-lpsapi \
+    --extra-libs=-lspeexdsp \
+    --extra-cflags=-mtune=core2 \
+    --extra-cflags=-O3 \
+    --disable-libgme \
+    --enable-runtime-cpudetect \
+    "
 
 #  build_libdlfcn # ffmpeg's frei0r implentation needs this <sigh>
 #  build_libogg
@@ -1662,78 +1720,78 @@ find_all_build_exes() {
 }
 
 build_dependencies() {
-#  build_libdlfcn # ffmpeg's frei0r implentation needs this <sigh>
+  build_libdlfcn # ffmpeg's frei0r implentation needs this <sigh>
   build_zlib # rtmp depends on it [as well as ffmpeg's optional but handy --enable-zlib]
-#  build_bzlib2 # in case someone wants it [ffmpeg uses it]
-#  build_liblzma
-#  build_libzimg
-#  build_libsnappy
+  build_bzlib2 # in case someone wants it [ffmpeg uses it]
+  build_liblzma
+  build_libzimg
+  build_libsnappy
   build_libpng # for openjpeg, needs zlib
-#  build_gmp # for libnettle
-#  build_libnettle # needs gmp
-#  build_iconv # mplayer I think needs it for freetype [just it though], vlc also wants it.  looks like ffmpeg can use it too...not sure what for :)
-#  build_gnutls # needs libnettle, can use iconv it appears
+  build_gmp # for libnettle
+  build_libnettle # needs gmp
+  build_iconv # mplayer I think needs it for freetype [just it though], vlc also wants it.  looks like ffmpeg can use it too...not sure what for :)
+  build_gnutls # needs libnettle, can use iconv it appears
 
-#  build_frei0r
-#  build_libsndfile
-#  build_libbs2b # needs libsndfile
-#  build_wavpack
-#  build_libgme_game_music_emu
-#  build_libwebp
-#  build_libflite # not for now till after rubberband
-#  build_libgsm
-#  build_sdl 
-#  build_sdl2 # needed for ffplay to be created
-#  build_libopus
-#  build_libopencore
-#  build_libogg
-#  build_libspeexdsp # needs libogg for exe's
-#  build_libspeex # needs libspeexdsp
-#  build_libvorbis # needs libogg
-#  build_libtheora # needs libvorbis, libogg
-#  build_orc
-#  build_libschroedinger # needs orc
-#  build_freetype # uses bz2/zlib seemingly
-#  build_libexpat
-#  build_libxml2
-#  build_libbluray # needs libxml2, freetype
-  # build_libjpeg_turbo # mplayer can use this, VLC qt might need it? [replaces libjpeg]
-#  build_libxvid
-#  build_libxavs
-#  build_libsoxr
-#  build_libebur128 # needs speex # Now included in ffmpeg as internal library
-#  build_libx265
-#  build_libopenh264
+  build_frei0r
+  build_libsndfile
+  build_libbs2b # needs libsndfile
+  build_wavpack
+  build_libgme_game_music_emu
+  build_libwebp
+  build_libflite # not for now till after rubberband
+  build_libgsm
+  build_sdl 
+  build_sdl2 # needed for ffplay to be created
+  build_libopus
+  build_libopencore
+  build_libogg
+  build_libspeexdsp # needs libogg for exe's
+  build_libspeex # needs libspeexdsp
+  build_libvorbis # needs libogg
+  build_libtheora # needs libvorbis, libogg
+  build_orc
+  build_libschroedinger # needs orc
+  build_freetype # uses bz2/zlib seemingly
+  build_libexpat
+  build_libxml2
+  build_libbluray # needs libxml2, freetype
+  build_libjpeg_turbo # mplayer can use this, VLC qt might need it? [replaces libjpeg]
+  build_libxvid
+  build_libxavs
+  build_libsoxr
+  build_libebur128 # needs speex # Now included in ffmpeg as internal library
+  build_libx265
+  build_libopenh264
 
-#  build_vamp_plugin # requires libsndfile
-#  build_fftw
-#  build_libsamplerate
-#  build_librubberband # needs libsndfile, vamp_plugin [though it never uses it], fftw, libsamplerate [some of which it doesn't have to use, but configure require they be installed, so we use them anyway...gah]
+  build_vamp_plugin # requires libsndfile
+  build_fftw
+  build_libsamplerate
+  build_librubberband # needs libsndfile, vamp_plugin [though it never uses it], fftw, libsamplerate [some of which it doesn't have to use, but configure require they be installed, so we use them anyway...gah]
 
-#  build_lame
-#  build_twolame
-#  build_vidstab
-#  build_netcdf
-#  build_libcaca
-#  build_libmodplug # ffmepg and vlc can use this
-#  build_zvbi
-#  build_libvpx
-#  build_libdecklink
-#  build_libilbc
-#  build_fontconfig # needs expat, needs freetype (at least uses it if available), can use iconv, but I believe doesn't currently
-#  build_libfribidi
-#  build_libass # needs freetype, needs fribidi, needs fontconfig
-#  build_libopenjpeg
+  build_lame
+  build_twolame
+  build_vidstab
+  build_netcdf
+  build_libcaca
+  build_libmodplug # ffmepg and vlc can use this
+  build_zvbi
+  build_libvpx
+  build_libdecklink
+  build_libilbc
+  build_fontconfig # needs expat, needs freetype (at least uses it if available), can use iconv, but I believe doesn't currently
+  build_libfribidi
+  build_libass # needs freetype, needs fribidi, needs fontconfig
+  build_libopenjpeg
   if [[ $build_intel_qsv = y ]]; then
     build_intel_quicksync_mfx
   fi
-#  if [[ "$non_free" = "y" ]]; then
-#    build_fdk_aac
-#    # build_faac # not included for now, too poor quality output :)
-#  fi
-#  # build_openssl # hopefully do not need it anymore, since we use gnutls everywhere, so just don't even build it anymore...
-#  build_librtmp # needs gnutls [or openssl...]
-#  build_libx264 # at bottom as it might build an ffmpeg which needs all the above deps...
+  if [[ "$non_free" = "y" ]]; then
+    build_fdk_aac
+    # build_faac # not included for now, too poor quality output :)
+  fi
+  # build_openssl # hopefully do not need it anymore, since we use gnutls everywhere, so just don't even build it anymore...
+  build_librtmp # needs gnutls [or openssl...]
+  build_libx264 # at bottom as it might build an ffmpeg which needs all the above deps...
 }
 
 build_apps() {
