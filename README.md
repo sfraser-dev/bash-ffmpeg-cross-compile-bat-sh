@@ -28,8 +28,8 @@ DLL:
 
 Static:
 
--- build a static FFmpeg using the script "crossCompileFfmpegMedialooks.sh"   
--- (sandbox dir hardcoded to "ffmpeg" and the cross-compiler directory hard-coded to "xc")   
-run\_ffmpeg\_cross\_compiler --sandbox="ffmpeg" --xcomp="xc" --lib="static" --file="crossCompileFfmpegMedialooks.sh"    
-... results in ->   
-bin\_files\timestamp\_dll\_crossCompileFfmpegMinimal   
+- build a static FFmpeg using the script "crossCompileFfmpegMedialooks.sh"   
+- (sandbox dir hardcoded to "ffmpeg" and the cross-compiler directory hard-coded to "xc")   
+- run\_ffmpeg\_cross\_compiler --sandbox="ffmpeg" --xcomp="xc" --lib="static" --file="crossCompileFfmpegMedialooks.sh"    
+- results in ->   
+    - bin\_files\timestamp\_dll\_crossCompileFfmpegMinimal   
