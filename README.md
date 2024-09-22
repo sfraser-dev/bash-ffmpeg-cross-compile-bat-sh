@@ -10,7 +10,7 @@ Created cross compiled ffmpeg.exes for Windows 32 bit and Windows 64 bit archite
 Example usage:  
 
 - `mkdir /usr/media`   
-      - `sudo chown user:user /usr/media`  
+    - `sudo chown user:user /usr/media`  
 - `cd /usr/media`
 - `git clone https://weebucket@bitbucket.org/weebucket/ffmpegcrosscompile.git .`
 
